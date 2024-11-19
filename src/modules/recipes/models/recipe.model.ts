@@ -2,7 +2,7 @@ import * as dynamose from 'dynamoose';
 import { v4 as uuidv4 } from 'uuid';
 
 const recipeSchema = new dynamose.Schema({
-  uuid: {
+  id: {
     type: String,
     hashKey: true,
     default: uuidv4,
