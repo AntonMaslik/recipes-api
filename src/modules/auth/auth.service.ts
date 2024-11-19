@@ -6,6 +6,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { SignInDTO } from './dto/sign-in.dto';
 import { TokenModel } from '../tokens/models/token.model';
+import { TokensDTO } from '../tokens/dto/tokens.dto';
 
 @Injectable()
 export class AuthService {
@@ -17,25 +18,30 @@ export class AuthService {
     this.tokenModel = TokenModel;
   }
 
-  async signUp(signUpDto: SignUpDTO) {
-    const user = await this.userModel
+  async signUp(signUpDto: SignUpDTO): Promise<TokensDTO> {
+    const users = await this.userModel
       .scan()
       .where('email')
       .eq(signUpDto.email)
-      .limit(1)
       .exec();
 
-    if (user.length === 0) {
+    if (users.length !== 0) {
       throw new ConflictException('User exists!');
     }
 
     const hashedPassword = await bcrypt.hash(signUpDto.password, 10);
 
-    return this.userModel.create({
+    const newUser = await this.userModel.create({
       name: signUpDto.name,
       email: signUpDto.email,
       password: hashedPassword,
     });
+
+    const tokens = await this.getTokens(newUser.id, newUser.name);
+
+    await this.createRefreshToken(newUser.id, tokens.refreshToken);
+
+    return tokens;
   }
 
   async signIn(signInDto: SignInDTO) {
@@ -65,11 +71,16 @@ export class AuthService {
       user.name,
     );
 
+    await this.createRefreshToken(user.id, refreshToken);
+
     return { accessToken, refreshToken };
   }
 
-  async updateRefreshToken(userId: string, refreshToken: string) {
-    await this.userModel.update({ id: userId }, { refreshToken });
+  async createRefreshToken(userId: string, refreshToken: string) {
+    await this.tokenModel.create({
+      userId,
+      refreshToken,
+    });
   }
 
   async logout() {}

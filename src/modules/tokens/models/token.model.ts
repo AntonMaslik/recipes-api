@@ -7,11 +7,12 @@ const tokenSchema = new dynamose.Schema({
     hashKey: true,
     default: uuidv4,
   },
-  token: {
+  refreshToken: {
     type: String,
   },
   userId: {
-    type: Number,
+    type: String,
+    index: { name: 'userIdIndex' },
   },
   createdAt: {
     type: Date,
