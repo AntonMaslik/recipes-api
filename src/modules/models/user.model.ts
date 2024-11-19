@@ -1,5 +1,30 @@
+import { Field, ObjectType } from '@nestjs/graphql';
 import * as dynamose from 'dynamoose';
 import { v4 as uuidv4 } from 'uuid';
+
+@ObjectType()
+export class User {
+  @Field()
+  uuid: string;
+
+  @Field()
+  name: string;
+
+  @Field()
+  email: string;
+
+  @Field()
+  password: string;
+
+  @Field()
+  createdAt: string;
+
+  @Field()
+  updatedAt: string;
+
+  @Field()
+  deleteAt: string;
+}
 
 const userSchema = new dynamose.Schema({
   uuid: {
@@ -30,4 +55,4 @@ const userSchema = new dynamose.Schema({
   },
 });
 
-export const userModel = dynamose.model('User', userSchema);
+export const UserModel = dynamose.model('User', userSchema);

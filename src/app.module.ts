@@ -5,7 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 
 import { DynamooseModule } from './aws/dynamoose/dynamoose.module';
 import { UsersModule } from './modules/users/users.module';
-import { UsersResolver } from './modules/users/user.resolver';
+import { UsersResolver } from './modules/users/resolvers/user.resolver';
 
 @Module({
   imports: [
