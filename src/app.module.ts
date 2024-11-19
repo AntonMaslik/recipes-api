@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { GraphQLModule } from '@nestjs/graphql';
+import { DynamooseModule } from './aws/dynamoose/dynamoose.module';
 
 @Module({
   imports: [
@@ -8,8 +9,7 @@ import { GraphQLModule } from '@nestjs/graphql';
       autoSchemaFile: true,
       playgroud: true,
     }),
+    DynamooseModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
