@@ -4,8 +4,8 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 
 import { DynamooseModule } from './aws/dynamoose/dynamoose.module';
-import { UsersModule } from './users/users.module';
-import { UsersResolver } from './users/user.resolver';
+import { UsersModule } from './modules/users/users.module';
+import { UsersResolver } from './modules/users/user.resolver';
 
 @Module({
   imports: [
