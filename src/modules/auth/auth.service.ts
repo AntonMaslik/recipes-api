@@ -19,7 +19,7 @@ export class AuthService {
       .eq(signUpDto.email)
       .exec();
 
-    if (!user) {
+    if (!user || user.length > 0) {
       throw new ConflictException('User exists!');
     }
 
