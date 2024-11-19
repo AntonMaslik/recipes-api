@@ -5,7 +5,14 @@ import { GraphQLModule } from '@nestjs/graphql';
 
 import { DynamooseModule } from './aws/dynamoose/dynamoose.module';
 import { UsersModule } from './modules/users/users.module';
+<<<<<<< Updated upstream
 import { UsersResolver } from './modules/users/user.resolver';
+=======
+import { AuthResolver } from './modules/auth/resolves/auth.resolver';
+import { UsersResolver } from './modules/users/resolvers/users.resolver';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserService } from './modules/users/users.service';
+>>>>>>> Stashed changes
 
 @Module({
   imports: [
@@ -16,7 +23,7 @@ import { UsersResolver } from './modules/users/user.resolver';
     }),
     DynamooseModule,
     UsersModule,
+    AuthModule,
   ],
-  providers: [UsersResolver],
 })
 export class AppModule {}
