@@ -9,7 +9,6 @@ import { UpdateUserDTO } from './dto/update-user.dto';
 @Injectable()
 export class UserService {
   private userModel: Model;
-
   constructor() {
     this.userModel = UserModel;
   }
@@ -19,18 +18,18 @@ export class UserService {
     return user.save();
   }
 
-  async updateUser(uuid: string, updateUserDto: UpdateUserDTO) {
+  async updateUser(id: string, updateUserDto: UpdateUserDTO) {
     return this.userModel.update({
-      uuid,
+      id,
       ...updateUserDto,
     });
   }
 
-  async deleteUserByUUID(uuid: string): Promise<any> {
-    return this.userModel.delete(uuid);
+  async deleteUserById(id: string): Promise<any> {
+    return this.userModel.delete(id);
   }
 
-  async getUserByUUID(uuid: string): Promise<any> {
-    return this.userModel.get(uuid);
+  async getUserById(id: string): Promise<any> {
+    return this.userModel.get(id);
   }
 }

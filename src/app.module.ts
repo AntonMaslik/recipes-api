@@ -5,7 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 
 import { DynamooseModule } from './aws/dynamoose/dynamoose.module';
 import { UsersModule } from './modules/users/users.module';
-import { UsersResolver } from './modules/users/resolvers/user.resolver';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { UsersResolver } from './modules/users/resolvers/user.resolver';
     }),
     DynamooseModule,
     UsersModule,
+    AuthModule,
   ],
-  providers: [UsersResolver],
 })
 export class AppModule {}
