@@ -37,6 +37,18 @@ const recipeSchema = new dynamose.Schema({
   rating: {
     type: Number,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+  deletedAt: {
+    type: Date,
+    default: null,
+  },
 });
 
 export const recipeModel = dynamose.model('Recipe', recipeSchema);
