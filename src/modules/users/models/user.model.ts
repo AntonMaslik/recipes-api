@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 @ObjectType()
 export class User {
   @Field()
-  uuid: string;
+  id: string;
 
   @Field()
   name: string;
@@ -27,7 +27,7 @@ export class User {
 }
 
 const userSchema = new dynamose.Schema({
-  uuid: {
+  id: {
     type: String,
     hashKey: true,
     default: uuidv4,
