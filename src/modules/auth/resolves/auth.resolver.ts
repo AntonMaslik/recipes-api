@@ -8,7 +8,7 @@ export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
   @Mutation(() => User)
-  async signUp(@Args() signUpDTO: SignUpDTO): Promise<any> {
+  async signUp(@Args('input') signUpDTO: SignUpDTO): Promise<any> {
     return this.authService.signUp(signUpDTO);
   }
 }
