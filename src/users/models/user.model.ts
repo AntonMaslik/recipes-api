@@ -1,9 +1,11 @@
 import * as dynamose from 'dynamoose';
+import { v4 as uuidv4 } from 'uuid';
 
 const userSchema = new dynamose.Schema({
   uuid: {
     type: String,
     hashKey: true,
+    default: uuidv4,
   },
   name: {
     type: String,
