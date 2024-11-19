@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
+import { DynamooseModule } from './aws/dynamoose/dynamoose.module';
 
 @Module({
-  imports: [],
+  imports: [DynamooseModule],
   controllers: [],
   providers: [],
 })
