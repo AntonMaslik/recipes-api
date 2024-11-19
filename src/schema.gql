@@ -1,0 +1,27 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: String!
+  name: String!
+  email: String!
+  password: String!
+  createdAt: String!
+  updatedAt: String!
+  deleteAt: String!
+}
+
+type Query {
+  getUserById(id: String!): User!
+}
+
+type Mutation {
+  signUp(input: SignUpDTO!): User!
+}
+
+input SignUpDTO {
+  email: String!
+  name: String!
+  password: String!
+}
