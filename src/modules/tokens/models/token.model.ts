@@ -27,4 +27,4 @@ const tokenSchema = new dynamose.Schema({
   },
 });
 
-export const tokenModel = dynamose.model('Token', tokenSchema);
+export const TokenModel = dynamose.model('Token', tokenSchema);
