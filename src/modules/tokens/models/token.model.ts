@@ -7,11 +7,12 @@ const tokenSchema = new dynamose.Schema({
     hashKey: true,
     default: uuidv4,
   },
-  token: {
+  refreshToken: {
     type: String,
   },
   userId: {
-    type: Number,
+    type: String,
+    index: { name: 'userIdIndex' },
   },
   createdAt: {
     type: Date,
@@ -27,4 +28,4 @@ const tokenSchema = new dynamose.Schema({
   },
 });
 
-export const tokenModel = dynamose.model('Token', tokenSchema);
+export const TokenModel = dynamose.model('Token', tokenSchema);

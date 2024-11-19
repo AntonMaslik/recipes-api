@@ -12,12 +12,17 @@ type User {
   deleteAt: String!
 }
 
+type TokensDTO {
+  accessToken: String!
+  refreshToken: String!
+}
+
 type Query {
   getUserById(id: String!): User!
 }
 
 type Mutation {
-  signUp(input: SignUpDTO!): User!
+  signUp(input: SignUpDTO!): TokensDTO!
 }
 
 input SignUpDTO {
