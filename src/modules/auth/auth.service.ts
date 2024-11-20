@@ -1,22 +1,24 @@
 import * as bcrypt from 'bcrypt';
 import { SignUpDTO } from './dto/sign-up.dto';
-import { Model } from 'dynamoose/dist/Model';
-import { UserModel } from '../users/models/user.model';
+import { UserKey, UserModel } from '../users/models/user.model';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { SignInDTO } from './dto/sign-in.dto';
-import { TokenModel } from '../tokens/models/token.model';
 import { TokensDTO } from '../tokens/dto/tokens.dto';
+import { InjectModel, Model } from 'nestjs-dynamoose';
+import { TokenKey, TokenModel } from '../tokens/models/token.model';
 
 @Injectable()
 export class AuthService {
-  private userModel: Model;
-  private tokenModel: Model;
+  constructor(
+    private jwtService: JwtService,
 
-  constructor(private jwtService: JwtService) {
-    this.userModel = UserModel;
-    this.tokenModel = TokenModel;
-  }
+    @InjectModel('User')
+    private userModel: Model<UserModel, UserKey>,
+
+    @InjectModel('Token')
+    private tokenModel: Model<TokenModel, TokenKey>,
+  ) {}
 
   async signUp(signUpDto: SignUpDTO): Promise<TokensDTO> {
     const users = await this.userModel
@@ -44,7 +46,7 @@ export class AuthService {
     return tokens;
   }
 
-  async signIn(signInDto: SignInDTO) {
+  async signIn(signInDto: SignInDTO): Promise<TokensDTO> {
     const users = await this.userModel
       .scan()
       .where('email')
@@ -52,7 +54,7 @@ export class AuthService {
       .exec();
 
     if (users.length === 0) {
-      throw new ConflictException('User exists!');
+      throw new ConflictException('User not exists!');
     }
 
     const user = users[0];
@@ -66,14 +68,11 @@ export class AuthService {
       throw new ConflictException('Invalid password!');
     }
 
-    const { accessToken, refreshToken } = await this.getTokens(
-      user.id,
-      user.name,
-    );
+    const tokens = await this.getTokens(user.id, user.name);
 
-    await this.createRefreshToken(user.id, refreshToken);
+    await this.createRefreshToken(user.id, tokens.refreshToken);
 
-    return { accessToken, refreshToken };
+    return tokens;
   }
 
   async createRefreshToken(userId: string, refreshToken: string) {
@@ -83,13 +82,28 @@ export class AuthService {
     });
   }
 
-  async logout() {}
+  // async logout(currentRefreshToken: string) {
+  //   const tokens = await this.tokenModel.get({
+  //     refreshToken: currentRefreshToken,
+  //   });
+
+  //   if (!tokens) {
+  //     throw new ConflictException('Token not find!');
+  //   }
+
+  //   const token = tokens[0];
+
+  //   await this.tokenModel.delete
+  // }
 
   async refreshToken() {}
 
   async changePassword() {}
 
-  async getTokens(userId: number, username: string) {
+  async getTokens(
+    userId: string,
+    username: string,
+  ): Promise<{ accessToken; refreshToken }> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {

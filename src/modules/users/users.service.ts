@@ -1,21 +1,20 @@
 import { Injectable } from '@nestjs/common';
 
-import { Model } from 'dynamoose/dist/Model';
-import { UserModel } from './models/user.model';
-
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 
+import { InjectModel, Model } from 'nestjs-dynamoose';
+import { UserKey, UserModel } from './models/user.model';
+
 @Injectable()
 export class UserService {
-  private userModel: Model;
-  constructor() {
-    this.userModel = UserModel;
-  }
+  constructor(
+    @InjectModel('User')
+    private userModel: Model<UserModel, UserKey>,
+  ) {}
 
   async createUser(createUserDto: CreateUserDTO) {
-    const user = new UserModel(createUserDto);
-    return user.save();
+    return this.userModel.create(createUserDto);
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDTO) {
@@ -26,10 +25,10 @@ export class UserService {
   }
 
   async deleteUserById(id: string): Promise<any> {
-    return this.userModel.delete(id);
+    return this.userModel.delete({ id });
   }
 
   async getUserById(id: string): Promise<any> {
-    return this.userModel.get(id);
+    return this.userModel.get({ id });
   }
 }

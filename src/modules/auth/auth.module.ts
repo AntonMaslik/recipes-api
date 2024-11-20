@@ -5,6 +5,9 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenStrategy } from './strategies/jwt-access-token.strategy';
 import { RefreshTokenStrategy } from './strategies/jwt-refresh-token.strategy';
+import { DynamooseModule } from 'nestjs-dynamoose';
+import { tokenSchema } from '../tokens/models/token.model';
+import { userSchema } from '../users/models/user.model';
 
 @Module({
   providers: [
@@ -20,6 +23,22 @@ import { RefreshTokenStrategy } from './strategies/jwt-refresh-token.strategy';
       secret: process.env.JWT_SECRET_TOKEN,
       signOptions: { expiresIn: '12h' },
     }),
+    DynamooseModule.forFeature([
+      {
+        name: 'Token',
+        schema: tokenSchema,
+        options: {
+          tableName: 'token',
+        },
+      },
+      {
+        name: 'User',
+        schema: userSchema,
+        options: {
+          tableName: 'user',
+        },
+      },
+    ]),
   ],
 })
 export class AuthModule {}

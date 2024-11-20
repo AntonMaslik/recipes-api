@@ -26,7 +26,7 @@ export class User {
   deleteAt: string;
 }
 
-const userSchema = new dynamose.Schema({
+export const userSchema = new dynamose.Schema({
   id: {
     type: String,
     hashKey: true,
@@ -55,4 +55,15 @@ const userSchema = new dynamose.Schema({
   },
 });
 
-export const UserModel = dynamose.model('User', userSchema);
+export interface UserKey {
+  id?: string;
+}
+
+export interface UserModel extends UserKey {
+  name?: string;
+  email?: string;
+  password?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: Date;
+}

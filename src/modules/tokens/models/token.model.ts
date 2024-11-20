@@ -1,7 +1,7 @@
 import * as dynamose from 'dynamoose';
 import { v4 as uuidv4 } from 'uuid';
 
-const tokenSchema = new dynamose.Schema({
+export const tokenSchema = new dynamose.Schema({
   id: {
     type: String,
     hashKey: true,
@@ -28,4 +28,14 @@ const tokenSchema = new dynamose.Schema({
   },
 });
 
-export const TokenModel = dynamose.model('Token', tokenSchema);
+export interface TokenKey {
+  id?: string;
+  refreshToken?: string;
+}
+
+export interface TokenModel extends TokenKey {
+  userId?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+}

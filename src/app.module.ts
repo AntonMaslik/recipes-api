@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 
-import { DynamooseModule } from './modules/dynamoose/dynamoose.module';
+import { DynamooseModule } from 'nestjs-dynamoose';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { join } from 'path';
@@ -15,7 +15,10 @@ import { join } from 'path';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req, res }) => ({ req, res }),
     }),
-    DynamooseModule,
+    DynamooseModule.forRoot({
+      local: true,
+      aws: { region: 'fake-west-1' },
+    }),
     UsersModule,
     AuthModule,
   ],
