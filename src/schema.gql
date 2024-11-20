@@ -19,10 +19,10 @@ type TokensDTO {
 
 type Query {
   getUserById(id: String!): User!
-  logout: Boolean!
 }
 
 type Mutation {
+  logout: Boolean!
   signUp(input: SignUpDTO!): TokensDTO!
   signIn(input: SignInDTO!): TokensDTO!
 }
