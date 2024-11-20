@@ -4,9 +4,10 @@ import { UsersResolver } from './resolvers/users.resolver';
 import { DynamooseModule } from 'nestjs-dynamoose';
 
 import { userSchema } from './models/user.model';
+import { UsersRepository } from './models/users.repository';
 
 @Module({
-  providers: [UsersResolver, UserService],
+  providers: [UsersResolver, UserService, UsersRepository],
   exports: [UserService],
   imports: [
     DynamooseModule.forFeature([

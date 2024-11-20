@@ -8,6 +8,8 @@ import { RefreshTokenStrategy } from './strategies/jwt-refresh-token.strategy';
 import { DynamooseModule } from 'nestjs-dynamoose';
 import { tokenSchema } from '../tokens/models/token.model';
 import { userSchema } from '../users/models/user.model';
+import { UsersRepository } from '../users/models/users.repository';
+import { TokensRepository } from '../tokens/models/tokens.repository';
 
 @Module({
   providers: [
@@ -15,6 +17,8 @@ import { userSchema } from '../users/models/user.model';
     AuthResolver,
     AccessTokenStrategy,
     RefreshTokenStrategy,
+    UsersRepository,
+    TokensRepository,
   ],
   exports: [AuthService, AccessTokenStrategy, PassportModule],
   imports: [

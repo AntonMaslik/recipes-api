@@ -1,39 +1,33 @@
 import * as bcrypt from 'bcrypt';
 import { SignUpDTO } from './dto/sign-up.dto';
-import { UserKey, UserModel } from '../users/models/user.model';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { SignInDTO } from './dto/sign-in.dto';
 import { TokensDTO } from '../tokens/dto/tokens.dto';
-import { InjectModel, Model } from 'nestjs-dynamoose';
-import { TokenKey, TokenModel } from '../tokens/models/token.model';
+import { UsersRepository } from '../users/models/users.repository';
+import { TokensRepository } from '../tokens/models/tokens.repository';
+import { UserModel } from '../users/models/user.model';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-
-    @InjectModel('User')
-    private userModel: Model<UserModel, UserKey>,
-
-    @InjectModel('Token')
-    private tokenModel: Model<TokenModel, TokenKey>,
+    private readonly usersRepository: UsersRepository,
+    private readonly tokensRepository: TokensRepository,
   ) {}
 
   async signUp(signUpDto: SignUpDTO): Promise<TokensDTO> {
-    const users = await this.userModel
-      .scan()
-      .where('email')
-      .eq(signUpDto.email)
-      .exec();
+    const user: UserModel = await this.usersRepository.findByEmail(
+      signUpDto.email,
+    );
 
-    if (users.length !== 0) {
+    if (user) {
       throw new ConflictException('User exists!');
     }
 
     const hashedPassword = await bcrypt.hash(signUpDto.password, 10);
 
-    const newUser = await this.userModel.create({
+    const newUser = await this.usersRepository.create({
       name: signUpDto.name,
       email: signUpDto.email,
       password: hashedPassword,
@@ -47,11 +41,7 @@ export class AuthService {
   }
 
   async signIn(signInDto: SignInDTO): Promise<TokensDTO> {
-    const users = await this.userModel
-      .scan()
-      .where('email')
-      .eq(signInDto.email)
-      .exec();
+    const users = await this.usersRepository.findByEmail(signInDto.email);
 
     if (users.length === 0) {
       throw new ConflictException('User not exists!');
@@ -76,25 +66,18 @@ export class AuthService {
   }
 
   async createRefreshToken(userId: string, refreshToken: string) {
-    await this.tokenModel.create({
-      userId,
-      refreshToken,
-    });
+    await this.tokensRepository.create(refreshToken, userId);
   }
 
-  // async logout(currentRefreshToken: string) {
-  //   const tokens = await this.tokenModel.get({
-  //     refreshToken: currentRefreshToken,
-  //   });
+  async logout(currentRefreshToken: string) {
+    const token = await this.tokensRepository.findByToken(currentRefreshToken);
 
-  //   if (!tokens) {
-  //     throw new ConflictException('Token not find!');
-  //   }
+    if (!token) {
+      throw new ConflictException('Token not find!');
+    }
 
-  //   const token = tokens[0];
-
-  //   await this.tokenModel.delete
-  // }
+    await this.tokensRepository.softDelete(token.id);
+  }
 
   async refreshToken() {}
 
