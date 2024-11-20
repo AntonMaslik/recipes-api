@@ -17,6 +17,9 @@ import { UserService } from './users.service';
                 options: {
                     tableName: 'user',
                 },
+                serializers: {
+                    frontend: { exclude: ['status'] },
+                },
             },
         ]),
     ],
