@@ -26,7 +26,7 @@ import { RefreshTokenStrategy } from './strategies/jwt-refresh-token.strategy';
         PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.register({
             secret: process.env.JWT_SECRET_TOKEN,
-            signOptions: { expiresIn: '12h' },
+            signOptions: { expiresIn: process.env.JWT_EXPIRATION_SECRET_TOKEN },
         }),
         DynamooseModule.forFeature([
             {
