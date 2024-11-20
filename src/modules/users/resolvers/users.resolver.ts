@@ -1,6 +1,6 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 
-import { User } from '../models/user.model';
+import { User, UserModel } from '../models/user.model';
 import { UserService } from '../users.service';
 
 @Resolver('User')
@@ -10,7 +10,7 @@ export class UsersResolver {
     @Query(() => User)
     async getUserById(
         @Args('id', { type: () => String }) id: string,
-    ): Promise<User> {
+    ): Promise<UserModel> {
         return this.usersService.getUserById(id);
     }
 }
