@@ -23,9 +23,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
 
     async validate(payload: JwtPayload) {
-        const foundUser: UserModel = await this.userModel.get({
-            id: payload.sub,
-        });
+        const foundUser = await this.userModel.get({ id: payload.sub });
 
         if (!foundUser) {
             throw new NotFoundException('User not found');
