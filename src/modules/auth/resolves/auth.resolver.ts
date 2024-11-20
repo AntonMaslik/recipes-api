@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Context, Query } from '@nestjs/graphql';
 import { SignUpDTO } from '../dto/sign-up.dto';
 import { AuthService } from '../auth.service';
 import { TokensDTO } from 'src/modules/tokens/dto/tokens.dto';
@@ -7,6 +7,15 @@ import { SignInDTO } from '../dto/sign-in.dto';
 @Resolver('Auth')
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
+
+  @Query(() => Boolean)
+  async logout(@Context() context: any) {
+    const { req, res } = context;
+
+    const currentRefreshToken = req.cookies['refreshToken'];
+
+    return await this.authService.logout(res, currentRefreshToken);
+  }
 
   @Mutation(() => TokensDTO)
   async signUp(

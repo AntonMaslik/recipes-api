@@ -25,17 +25,18 @@ export class TokensRepository {
 
   async findByToken(refreshToken: string): Promise<any> {
     const tokens = await this.tokenModel
-      .scan('refreshToken')
+      .scan()
+      .where('refreshToken')
       .eq(refreshToken)
       .exec();
 
-    if (tokens.length == 0) {
+    if (tokens.length === 0) {
       return null;
     }
 
     const token = tokens[0];
 
-    if (token && token.deletedAt !== null) {
+    if (token.deletedAt) {
       return null;
     }
 

@@ -7,6 +7,7 @@ import { TokensDTO } from '../tokens/dto/tokens.dto';
 import { UsersRepository } from '../users/models/users.repository';
 import { TokensRepository } from '../tokens/models/tokens.repository';
 import { UserModel } from '../users/models/user.model';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -69,7 +70,7 @@ export class AuthService {
     await this.tokensRepository.create(refreshToken, userId);
   }
 
-  async logout(currentRefreshToken: string) {
+  async logout(res: Response, currentRefreshToken: string) {
     const token = await this.tokensRepository.findByToken(currentRefreshToken);
 
     if (!token) {
@@ -77,6 +78,10 @@ export class AuthService {
     }
 
     await this.tokensRepository.softDelete(token.id);
+
+    await res.clearCookie('refreshToken');
+
+    return true;
   }
 
   async refreshToken() {}

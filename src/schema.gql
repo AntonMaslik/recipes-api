@@ -19,6 +19,7 @@ type TokensDTO {
 
 type Query {
   getUserById(id: String!): User!
+  logout: Boolean!
 }
 
 type Mutation {
