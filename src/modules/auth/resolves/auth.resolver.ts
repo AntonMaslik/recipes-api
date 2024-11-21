@@ -13,7 +13,9 @@ export class AuthResolver {
     constructor(private readonly authService: AuthService) {}
 
     @AccessGuard()
-    @Mutation(() => Boolean)
+    @Mutation(() => Boolean, {
+        name: 'logout',
+    })
     async logout(@Context() context: any): Promise<boolean> {
         const { req, res } = context;
 
@@ -28,7 +30,9 @@ export class AuthResolver {
         return this.authService.logout(currentRefreshToken);
     }
 
-    @Mutation(() => TokensDTO)
+    @Mutation(() => TokensDTO, {
+        name: 'sign-up',
+    })
     async signUp(
         @Args('input') signUpDTO: SignUpDTO,
         @Context() context: any,
@@ -42,7 +46,9 @@ export class AuthResolver {
         return tokens;
     }
 
-    @Mutation(() => TokensDTO)
+    @Mutation(() => TokensDTO, {
+        name: 'sign-in',
+    })
     async signIn(
         @Args('input') signInDTO: SignInDTO,
         @Context() context: any,
@@ -57,7 +63,9 @@ export class AuthResolver {
     }
 
     @RefreshGuard()
-    @Mutation(() => TokensDTO)
+    @Mutation(() => TokensDTO, {
+        name: 'refresh',
+    })
     async refreshToken(@Context() context: any): Promise<TokensDTO> {
         const { res } = context;
 
