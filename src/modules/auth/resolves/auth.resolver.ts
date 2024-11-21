@@ -10,12 +10,12 @@ export class AuthResolver {
     constructor(private readonly authService: AuthService) {}
 
     @Mutation(() => Boolean)
-    async logout(@Context() context: any) {
+    async logout(@Context() context: any): Promise<boolean> {
         const { req, res } = context;
 
-        const currentRefreshToken = req.cookies['refreshToken'];
+        const currentRefreshToken: string = req.cookies['refreshToken'];
 
-        return await this.authService.logout(res, currentRefreshToken);
+        return this.authService.logout(res, currentRefreshToken);
     }
 
     @Mutation(() => TokensDTO)
@@ -25,7 +25,7 @@ export class AuthResolver {
     ): Promise<TokensDTO> {
         const { res } = context;
 
-        const tokens = await this.authService.signUp(signUpDTO);
+        const tokens: TokensDTO = await this.authService.signUp(signUpDTO);
 
         res.cookie('refreshToken', tokens.refreshToken, {
             httpOnly: true,
@@ -43,7 +43,7 @@ export class AuthResolver {
     ): Promise<TokensDTO> {
         const { res } = context;
 
-        const tokens = await this.authService.signIn(signInDTO);
+        const tokens: TokensDTO = await this.authService.signIn(signInDTO);
 
         res.cookie('refreshToken', tokens.refreshToken, {
             httpOnly: true,

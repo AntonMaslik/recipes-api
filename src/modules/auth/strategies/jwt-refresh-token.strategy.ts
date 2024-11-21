@@ -32,7 +32,9 @@ export class RefreshTokenStrategy extends PassportStrategy(
     }
 
     async validate(payload: JwtPayload) {
-        const foundUser = await this.userModel.get({ id: payload.sub });
+        const foundUser: UserModel = await this.userModel.get({
+            id: payload.sub,
+        });
 
         if (!foundUser) {
             throw new NotFoundException('User not found');

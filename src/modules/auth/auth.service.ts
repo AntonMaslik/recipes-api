@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 
 import { TokensDTO } from '../tokens/dto/tokens.dto';
+import { TokenModel } from '../tokens/models/token.model';
 import { TokensRepository } from '../tokens/models/tokens.repository';
 import { UserModel } from '../users/models/user.model';
 import { UsersRepository } from '../users/models/users.repository';
@@ -27,7 +28,10 @@ export class AuthService {
             throw new ConflictException('User exists!');
         }
 
-        const hashedPassword = await bcrypt.hash(signUpDto.password, 10);
+        const hashedPassword: string = await bcrypt.hash(
+            signUpDto.password,
+            10,
+        );
 
         const newUser = await this.usersRepository.create({
             name: signUpDto.name,
@@ -35,7 +39,10 @@ export class AuthService {
             password: hashedPassword,
         });
 
-        const tokens = await this.getTokens(newUser.id, newUser.name);
+        const tokens: { accessToken; refreshToken } = await this.getTokens(
+            newUser.id,
+            newUser.name,
+        );
 
         await this.createRefreshToken(newUser.id, tokens.refreshToken);
 
@@ -51,7 +58,7 @@ export class AuthService {
             throw new ConflictException('User not exists!');
         }
 
-        const passwordMatches = await bcrypt.compare(
+        const passwordMatches: boolean = await bcrypt.compare(
             signInDto.password,
             user.password,
         );
@@ -60,19 +67,25 @@ export class AuthService {
             throw new ConflictException('Invalid password!');
         }
 
-        const tokens = await this.getTokens(user.id, user.name);
+        const tokens: { accessToken; refreshToken } = await this.getTokens(
+            user.id,
+            user.name,
+        );
 
         await this.createRefreshToken(user.id, tokens.refreshToken);
 
         return tokens;
     }
 
-    async createRefreshToken(userId: string, refreshToken: string) {
-        await this.tokensRepository.create(refreshToken, userId);
+    async createRefreshToken(
+        userId: string,
+        refreshToken: string,
+    ): Promise<TokenModel> {
+        return this.tokensRepository.create(refreshToken, userId);
     }
 
-    async logout(res: Response, currentRefreshToken: string) {
-        const token =
+    async logout(res: Response, currentRefreshToken: string): Promise<boolean> {
+        const token: TokenModel =
             await this.tokensRepository.findByToken(currentRefreshToken);
 
         if (!token) {
