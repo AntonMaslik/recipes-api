@@ -42,6 +42,7 @@ export class AuthService {
             name: signUpDto.name,
             email: signUpDto.email,
             password: hashedPassword,
+            roles: ['USER'],
         });
 
         const tokens: { accessToken; refreshToken } = await this.getTokens(

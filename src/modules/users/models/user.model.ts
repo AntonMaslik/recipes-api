@@ -16,6 +16,11 @@ export const userSchema = new dynamose.Schema({
     password: {
         type: String,
     },
+    roles: {
+        type: Array,
+        schema: [String],
+        required: true,
+    },
     createdAt: {
         type: Date,
         default: Date.now,
@@ -41,4 +46,5 @@ export interface UserModel extends UserKey {
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: Date;
+    roles?: string[];
 }
