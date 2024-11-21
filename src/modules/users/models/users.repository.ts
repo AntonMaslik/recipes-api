@@ -1,3 +1,4 @@
+import { ScanResponse } from 'nestjs-dynamoose';
 import { InjectModel, Model } from 'nestjs-dynamoose';
 
 import { CreateUserDTO } from '../dto/create-user.dto';
@@ -18,13 +19,20 @@ export class UsersRepository {
         );
     }
 
-    async findNonDeleted(): Promise<any[]> {
-        return await this.userModel.scan().where('deletedAt').eq(null).exec();
+    async findNonDeleted(): Promise<ScanResponse<UserModel>> {
+        const users = await this.userModel
+            .scan()
+            .where('deletedAt')
+            .eq(null)
+            .exec();
+
+        return users;
     }
 
-    async findById(userId: string): Promise<any> {
-        const user = await this.userModel.get({ id: userId });
-        if (user && user.deletedAt !== null) {
+    async findById(userId: string): Promise<UserModel> {
+        const user: UserModel = await this.userModel.get({ id: userId });
+
+        if (user && user.deletedAt !== undefined) {
             return null;
         }
         return user;
@@ -35,7 +43,7 @@ export class UsersRepository {
 
         const user = users[0];
 
-        if (user.deletedAt) {
+        if (user && user.deletedAt !== undefined) {
             return null;
         }
 
