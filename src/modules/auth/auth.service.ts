@@ -197,6 +197,7 @@ export class AuthService {
             name: user.name,
             password: hashNewPassword,
             email: user.email,
+            roles: user.roles,
         });
 
         return changePasswordDto;

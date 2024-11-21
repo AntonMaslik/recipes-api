@@ -18,7 +18,7 @@ export class RolesGuard implements CanActivate {
     canActivate(
         context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {
-        const { user } = context.switchToHttp().getRequest();
+        const { req } = context.switchToHttp().getNext();
 
         const requiredRoles = this.reflector.getAllAndOverride<Role[]>(
             ROLES_KEY,
@@ -29,7 +29,7 @@ export class RolesGuard implements CanActivate {
             return false;
         }
 
-        const roles: string[] = user.UserDb.roles;
+        const roles: string[] = req.user.userDb.roles;
 
         return requiredRoles.some((role) => roles?.includes(role));
     }
