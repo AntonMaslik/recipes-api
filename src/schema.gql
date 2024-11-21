@@ -25,6 +25,7 @@ type Mutation {
   logout: Boolean!
   signUp(input: SignUpDTO!): TokensDTO!
   signIn(input: SignInDTO!): TokensDTO!
+  refreshToken: TokensDTO!
 }
 
 input SignUpDTO {

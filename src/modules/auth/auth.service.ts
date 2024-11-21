@@ -1,4 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+    ConflictException,
+    ForbiddenException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
@@ -84,7 +89,7 @@ export class AuthService {
         return this.tokensRepository.create(refreshToken, userId);
     }
 
-    async logout(res: Response, currentRefreshToken: string): Promise<boolean> {
+    async logout(currentRefreshToken: string): Promise<boolean> {
         const token: TokenModel =
             await this.tokensRepository.findByToken(currentRefreshToken);
 
@@ -93,8 +98,6 @@ export class AuthService {
         }
 
         await this.tokensRepository.softDelete(token.id);
-
-        await res.clearCookie('refreshToken');
 
         return true;
     }
@@ -130,5 +133,38 @@ export class AuthService {
             accessToken,
             refreshToken,
         };
+    }
+
+    async refreshToken(
+        userId: string,
+        refreshToken: string,
+    ): Promise<TokensDTO> {
+        const token: TokenModel =
+            await this.tokensRepository.findByToken(refreshToken);
+
+        if (!token) {
+            throw new NotFoundException('Token is not find');
+        }
+
+        const hash: string = await bcrypt.hash(refreshToken, 10);
+        const refreshTokenMatches: boolean = await bcrypt.compare(
+            token.refreshToken,
+            hash,
+        );
+
+        if (!refreshTokenMatches) {
+            throw new ForbiddenException('Access Denied');
+        }
+
+        const user: UserModel = await this.usersRepository.findById(userId);
+
+        const tokens: { accessToken; refreshToken } = await this.getTokens(
+            user.id,
+            user.name,
+        );
+
+        await this.createRefreshToken(user.id, tokens.refreshToken);
+
+        return tokens;
     }
 }
