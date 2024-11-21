@@ -4,6 +4,7 @@ import { TokensDTO } from 'src/modules/tokens/dto/tokens.dto';
 import { AuthService } from '../auth.service';
 import { SignInDTO } from '../dto/sign-in.dto';
 import { SignUpDTO } from '../dto/sign-up.dto';
+import { COOKIE_OPTIONS } from 'src/config/cookies.options';
 
 @Resolver('Auth')
 export class AuthResolver {
@@ -27,11 +28,7 @@ export class AuthResolver {
 
         const tokens: TokensDTO = await this.authService.signUp(signUpDTO);
 
-        res.cookie('refreshToken', tokens.refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'strict',
-        });
+        res.cookie('refreshToken', tokens.refreshToken, COOKIE_OPTIONS);
 
         return tokens;
     }
@@ -45,11 +42,7 @@ export class AuthResolver {
 
         const tokens: TokensDTO = await this.authService.signIn(signInDTO);
 
-        res.cookie('refreshToken', tokens.refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'strict',
-        });
+        res.cookie('refreshToken', tokens.refreshToken, COOKIE_OPTIONS);
 
         return tokens;
     }
