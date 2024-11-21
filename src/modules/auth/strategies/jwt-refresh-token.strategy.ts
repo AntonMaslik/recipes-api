@@ -3,12 +3,12 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { InjectModel, Model } from 'nestjs-dynamoose';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { User, UserKey, UserModel } from 'src/modules/users/models/user.model';
+import { UserKey, UserModel } from 'src/modules/users/models/user.model';
 
 type JwtPayload = {
     sub: string;
     username: string;
-    userDb: User;
+    userDb: UserModel;
 };
 
 @Injectable()

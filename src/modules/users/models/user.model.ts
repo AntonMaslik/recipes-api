@@ -1,30 +1,5 @@
-import { Field, ObjectType } from '@nestjs/graphql';
 import * as dynamose from 'dynamoose';
 import { v4 as uuidv4 } from 'uuid';
-
-@ObjectType()
-export class User {
-    @Field()
-    id: string;
-
-    @Field()
-    name: string;
-
-    @Field()
-    email: string;
-
-    @Field()
-    password: string;
-
-    @Field()
-    createdAt: string;
-
-    @Field()
-    updatedAt: string;
-
-    @Field()
-    deleteAt: string;
-}
 
 export const userSchema = new dynamose.Schema({
     id: {

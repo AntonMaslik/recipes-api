@@ -12,6 +12,7 @@ import { TokenModel } from '../tokens/models/token.model';
 import { TokensRepository } from '../tokens/models/tokens.repository';
 import { UserModel } from '../users/models/user.model';
 import { UsersRepository } from '../users/models/users.repository';
+import { ChangePasswordDTO } from './dto/change-password.dto';
 import { SignInDTO } from './dto/sign-in.dto';
 import { SignUpDTO } from './dto/sign-up.dto';
 
@@ -165,5 +166,38 @@ export class AuthService {
         await this.createRefreshToken(user.id, tokens.refreshToken);
 
         return tokens;
+    }
+
+    async changePassword(
+        userId: string,
+        changePasswordDto: ChangePasswordDTO,
+    ): Promise<ChangePasswordDTO> {
+        const user: UserModel = await this.usersRepository.findById(userId);
+
+        if (!user) {
+            throw new NotFoundException('User not find');
+        }
+
+        const currentPasswordMatches: boolean = await bcrypt.compare(
+            changePasswordDto.currentPassword,
+            user.password,
+        );
+
+        if (!currentPasswordMatches) {
+            throw new ForbiddenException('Wrong password');
+        }
+
+        const hashNewPassword: string = await bcrypt.hash(
+            changePasswordDto.newPassword,
+            10,
+        );
+
+        await this.usersRepository.update(userId, {
+            name: user.name,
+            password: hashNewPassword,
+            email: user.email,
+        });
+
+        return changePasswordDto;
     }
 }

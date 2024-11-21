@@ -5,8 +5,10 @@ import { TokensDTO } from 'src/modules/tokens/dto/tokens.dto';
 
 import { AuthService } from '../auth.service';
 import { AccessGuard, RefreshGuard } from '../decorators/guard.decorators';
+import { ChangePasswordDTO } from '../dto/change-password.dto';
 import { SignInDTO } from '../dto/sign-in.dto';
 import { SignUpDTO } from '../dto/sign-up.dto';
+import { ChangePassword } from '../object-types/change-password.type';
 
 @Resolver('Auth')
 export class AuthResolver {
@@ -31,7 +33,7 @@ export class AuthResolver {
     }
 
     @Mutation(() => TokensDTO, {
-        name: 'sign-up',
+        name: 'signUp',
     })
     async signUp(
         @Args('input') signUpDTO: SignUpDTO,
@@ -47,7 +49,7 @@ export class AuthResolver {
     }
 
     @Mutation(() => TokensDTO, {
-        name: 'sign-in',
+        name: 'signIn',
     })
     async signIn(
         @Args('input') signInDTO: SignInDTO,
@@ -78,5 +80,16 @@ export class AuthResolver {
         res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
 
         return { accessToken, refreshToken };
+    }
+
+    @AccessGuard()
+    @Mutation(() => ChangePassword, { name: 'changePassword' })
+    async changePassword(
+        @Args('input') changePasswordDto: ChangePasswordDTO,
+        @Context() context: any,
+    ): Promise<ChangePasswordDTO> {
+        const { req } = context;
+
+        return this.authService.changePassword(req.user.sub, changePasswordDto);
     }
 }
