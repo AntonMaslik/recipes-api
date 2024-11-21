@@ -31,7 +31,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
         });
     }
 
-    async validate(payload: JwtPayload) {
+    async validate(_request: Request, payload: JwtPayload) {
         const foundUser: UserModel = await this.userModel.get({
             id: payload.sub,
         });

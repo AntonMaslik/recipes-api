@@ -69,12 +69,12 @@ export class AuthResolver {
         name: 'refresh',
     })
     async refreshToken(@Context() context: any): Promise<TokensDTO> {
-        const { res } = context;
+        const { req, res } = context;
 
         const { accessToken, refreshToken } =
             await this.authService.refreshToken(
-                res.user.id,
-                res.cookies.refreshToken,
+                req.user.userDb.id,
+                req.cookies.refreshToken,
             );
 
         res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
