@@ -38,7 +38,11 @@ export class TokensRepository {
         const result = [];
 
         for (const token of tokens) {
-            if (await bcrypt.compare(refreshToken, token.refreshToken)) {
+            const status: boolean = await bcrypt.compare(
+                refreshToken,
+                token.refreshToken,
+            );
+            if (status) {
                 result.push(token);
             }
         }
