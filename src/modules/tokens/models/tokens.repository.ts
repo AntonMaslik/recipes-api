@@ -19,12 +19,7 @@ export class TokensRepository {
     }
 
     async findNonDeleted(): Promise<ScanResponse<TokenModel>> {
-        return await this.tokenModel
-            .scan()
-            .where('deletedAt')
-            .not()
-            .exists()
-            .exec();
+        return this.tokenModel.scan().where('deletedAt').not().exists().exec();
     }
 
     async findById(id: string): Promise<TokenModel> {
@@ -100,7 +95,7 @@ export class TokensRepository {
     }
 
     async update(refreshToken: string, userId: string): Promise<TokenModel> {
-        return await this.tokenModel.update({
+        return this.tokenModel.update({
             refreshToken,
             userId,
         });

@@ -12,7 +12,7 @@ export class UsersRepository {
     async softDelete(userId: string): Promise<UserModel> {
         const now: Date = new Date();
 
-        return await this.userModel.update(
+        return this.userModel.update(
             { id: userId },
             {
                 deletedAt: now,
