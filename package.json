@@ -36,11 +36,11 @@
     "dynamoose": "^4.0.2",
     "graphql": "^16.9.0",
     "nestjs-dynamoose": "^0.5.8",
+    "package.json": "^2.0.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1",
-    "uuid": "^11.0.3"
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
