@@ -1,12 +1,17 @@
 import { NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { InjectModel, Model, ScanResponse } from 'nestjs-dynamoose';
+import {
+    InjectModel,
+    Model,
+    QueryResponse,
+    ScanResponse,
+} from 'nestjs-dynamoose';
 
 import { TokenKey, TokenModel } from './token.model';
 
 export class TokensRepository {
     @InjectModel('Token')
-    private tokenModel: Model<TokenModel, TokenKey>;
+    private readonly tokenModel: Model<TokenModel, TokenKey>;
 
     async softDelete(id: string): Promise<TokenModel> {
         const now: Date = new Date();
@@ -23,12 +28,18 @@ export class TokensRepository {
     }
 
     async findById(id: string): Promise<TokenModel> {
-        const token: TokenModel = await this.tokenModel.get({ id });
+        const tokens: QueryResponse<TokenModel> = await this.tokenModel
+            .query('id')
+            .eq(id)
+            .where('deletedAt')
+            .not()
+            .exists()
+            .exec();
 
-        if (token && token.deletedAt !== null) {
-            return null;
+        if (tokens.length > 0) {
+            return tokens[0];
         }
-        return token;
+        return null;
     }
 
     async findTokensByHashCompare(
@@ -68,19 +79,17 @@ export class TokensRepository {
             .scan()
             .where('refreshToken')
             .eq(refreshToken)
+            .and()
+            .where('deletedAt')
+            .not()
+            .exists()
             .exec();
 
-        if (tokens.length === 0) {
+        if (tokens.length < 0) {
             return null;
         }
 
-        const token: TokenModel = tokens[0];
-
-        if (token.deletedAt) {
-            return null;
-        }
-
-        return token;
+        return tokens[0];
     }
 
     async create(refreshToken: string, userId: string): Promise<TokenModel> {
