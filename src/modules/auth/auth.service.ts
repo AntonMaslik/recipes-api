@@ -20,7 +20,7 @@ import { SignUpDTO } from './dto/sign-up.dto';
 @Injectable()
 export class AuthService {
     constructor(
-        private jwtService: JwtService,
+        private readonly jwtService: JwtService,
         private readonly usersRepository: UsersRepository,
         private readonly tokensRepository: TokensRepository,
     ) {}
