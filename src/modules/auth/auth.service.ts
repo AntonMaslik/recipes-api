@@ -56,7 +56,7 @@ export class AuthService {
             10,
         );
 
-        await this.createRefreshToken(newUser.id, hashRefreshToken);
+        await this.tokensRepository.create(hashRefreshToken, newUser.id);
 
         return tokens;
     }
@@ -89,16 +89,9 @@ export class AuthService {
             10,
         );
 
-        await this.createRefreshToken(user.id, hashRefreshToken);
+        await this.tokensRepository.create(hashRefreshToken, user.id);
 
         return tokens;
-    }
-
-    async createRefreshToken(
-        userId: string,
-        refreshToken: string,
-    ): Promise<TokenModel> {
-        return this.tokensRepository.create(refreshToken, userId);
     }
 
     async logout(currentRefreshToken: string): Promise<boolean> {
@@ -162,7 +155,7 @@ export class AuthService {
             10,
         );
 
-        await this.createRefreshToken(user.id, hashRefreshToken);
+        await this.tokensRepository.create(hashRefreshToken, user.id);
 
         await this.tokensRepository.softDelete(token.id);
 

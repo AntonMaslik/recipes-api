@@ -10,7 +10,7 @@ export class TokensRepository {
 
     async softDelete(id: string): Promise<TokenModel> {
         const now: Date = new Date();
-        return await this.tokenModel.update({ id }, { deletedAt: now });
+        return this.tokenModel.update({ id }, { deletedAt: now });
     }
 
     async findNonDeleted(): Promise<ScanResponse<TokenModel>> {
@@ -84,7 +84,7 @@ export class TokensRepository {
     }
 
     async create(refreshToken: string, userId: string): Promise<TokenModel> {
-        return await this.tokenModel.create({
+        return this.tokenModel.create({
             refreshToken,
             userId,
         });
