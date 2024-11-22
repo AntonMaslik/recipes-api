@@ -7,6 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
+import { Role } from '../roles/roles.enum';
 import { TokensDTO } from '../tokens/dto/tokens.dto';
 import { TokenModel } from '../tokens/models/token.model';
 import { TokensRepository } from '../tokens/models/tokens.repository';
@@ -42,7 +43,7 @@ export class AuthService {
             name: signUpDto.name,
             email: signUpDto.email,
             password: hashedPassword,
-            roles: ['USER'],
+            roles: [Role.USER],
         });
 
         const tokens: { accessToken; refreshToken } = await this.getTokens(
@@ -50,7 +51,12 @@ export class AuthService {
             newUser.name,
         );
 
-        await this.createRefreshToken(newUser.id, tokens.refreshToken);
+        const hashRefreshToken: string = await bcrypt.hash(
+            tokens.refreshToken,
+            10,
+        );
+
+        await this.createRefreshToken(newUser.id, hashRefreshToken);
 
         return tokens;
     }
@@ -78,7 +84,12 @@ export class AuthService {
             user.name,
         );
 
-        await this.createRefreshToken(user.id, tokens.refreshToken);
+        const hashRefreshToken: string = await bcrypt.hash(
+            tokens.refreshToken,
+            10,
+        );
+
+        await this.createRefreshToken(user.id, hashRefreshToken);
 
         return tokens;
     }
@@ -92,11 +103,7 @@ export class AuthService {
 
     async logout(currentRefreshToken: string): Promise<boolean> {
         const token: TokenModel =
-            await this.tokensRepository.findByToken(currentRefreshToken);
-
-        if (!token) {
-            throw new ConflictException('Token not find!');
-        }
+            await this.tokensRepository.findByHash(currentRefreshToken);
 
         await this.tokensRepository.softDelete(token.id);
 
@@ -141,21 +148,7 @@ export class AuthService {
         refreshToken: string,
     ): Promise<TokensDTO> {
         const token: TokenModel =
-            await this.tokensRepository.findByToken(refreshToken);
-
-        if (!token) {
-            throw new NotFoundException('Token is not find');
-        }
-
-        const hash: string = await bcrypt.hash(refreshToken, 10);
-        const refreshTokenMatches: boolean = await bcrypt.compare(
-            token.refreshToken,
-            hash,
-        );
-
-        if (!refreshTokenMatches) {
-            throw new ForbiddenException('Access Denied');
-        }
+            await this.tokensRepository.findByHash(refreshToken);
 
         const user: UserModel = await this.usersRepository.findById(userId);
 
@@ -164,7 +157,14 @@ export class AuthService {
             user.name,
         );
 
-        await this.createRefreshToken(user.id, tokens.refreshToken);
+        const hashRefreshToken: string = await bcrypt.hash(
+            tokens.refreshToken,
+            10,
+        );
+
+        await this.createRefreshToken(user.id, hashRefreshToken);
+
+        await this.tokensRepository.softDelete(token.id);
 
         return tokens;
     }
