@@ -1,0 +1,53 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type TokensDTO {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type ChangePassword {
+  currentPassword: String!
+  newPassword: String!
+}
+
+type User {
+  id: String!
+  name: String!
+  email: String!
+  password: String!
+  createdAt: String!
+  updatedAt: String!
+  deleteAt: String!
+}
+
+type Query {
+  getUserById(id: String!): User!
+  getMe: User!
+  deleteUser(id: String!): User!
+}
+
+type Mutation {
+  logout: Boolean!
+  signUp(input: SignUpDTO!): TokensDTO!
+  signIn(input: SignInDTO!): TokensDTO!
+  refresh: TokensDTO!
+  changePassword(input: ChangePasswordDTO!): ChangePassword!
+}
+
+input SignUpDTO {
+  email: String!
+  name: String!
+  password: String!
+}
+
+input SignInDTO {
+  email: String!
+  password: String!
+}
+
+input ChangePasswordDTO {
+  currentPassword: String!
+  newPassword: String!
+}
