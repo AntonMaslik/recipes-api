@@ -1,9 +1,8 @@
+import { CreateUserDTO } from '@modules/users/dto/create-user.dto';
+import { UpdateUserDTO } from '@modules/users/dto/update-user.dto';
+import { UserKey, UserModel } from '@modules/users/models/user.model';
 import { QueryResponse, ScanResponse } from 'nestjs-dynamoose';
 import { InjectModel, Model } from 'nestjs-dynamoose';
-
-import { CreateUserDTO } from '../dto/create-user.dto';
-import { UpdateUserDTO } from '../dto/update-user.dto';
-import { UserKey, UserModel } from './user.model';
 
 export class UsersRepository {
     @InjectModel('User')

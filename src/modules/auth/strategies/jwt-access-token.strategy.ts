@@ -1,8 +1,8 @@
+import { UserKey, UserModel } from '@modules/users/models/user.model';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectModel, Model } from 'nestjs-dynamoose';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UserKey, UserModel } from 'src/modules/users/models/user.model';
 
 type JwtPayload = {
     sub: string;

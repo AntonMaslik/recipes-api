@@ -1,12 +1,11 @@
+import { AccessGuard } from '@modules/auth/decorators/guard.decorators';
+import { Roles } from '@modules/roles/decorators/roles.decorator';
+import { RolesGuard } from '@modules/roles/decorators/roles-guard.decorator';
+import { Role } from '@modules/roles/roles.enum';
+import { UserModel } from '@modules/users/models/user.model';
+import { User } from '@modules/users/object-types/users-object.type';
+import { UserService } from '@modules/users/users.service';
 import { Args, Context, Query, Resolver } from '@nestjs/graphql';
-import { AccessGuard } from 'src/modules/auth/decorators/guard.decorators';
-import { Roles } from 'src/modules/roles/decorators/roles.decorator';
-import { RolesGuard } from 'src/modules/roles/decorators/roles-guard.decorator';
-import { Role } from 'src/modules/roles/roles.enum';
-
-import { UserModel } from '../models/user.model';
-import { User } from '../object-types/users-object.type';
-import { UserService } from '../users.service';
 
 @AccessGuard()
 @Resolver('User')

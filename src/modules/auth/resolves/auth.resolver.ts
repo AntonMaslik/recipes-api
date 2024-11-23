@@ -1,14 +1,16 @@
+import { COOKIE_OPTIONS } from '@app/config/cookies.options';
+import { AuthService } from '@modules/auth/auth.service';
+import {
+    AccessGuard,
+    RefreshGuard,
+} from '@modules/auth/decorators/guard.decorators';
+import { ChangePasswordDTO } from '@modules/auth/dto/change-password.dto';
+import { SignInDTO } from '@modules/auth/dto/sign-in.dto';
+import { SignUpDTO } from '@modules/auth/dto/sign-up.dto';
+import { ChangePassword } from '@modules/auth/object-types/change-password.type';
+import { TokensDTO } from '@modules/tokens/dto/tokens.dto';
 import { NotFoundException } from '@nestjs/common';
 import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
-import { COOKIE_OPTIONS } from 'src/config/cookies.options';
-import { TokensDTO } from 'src/modules/tokens/dto/tokens.dto';
-
-import { AuthService } from '../auth.service';
-import { AccessGuard, RefreshGuard } from '../decorators/guard.decorators';
-import { ChangePasswordDTO } from '../dto/change-password.dto';
-import { SignInDTO } from '../dto/sign-in.dto';
-import { SignUpDTO } from '../dto/sign-up.dto';
-import { ChangePassword } from '../object-types/change-password.type';
 
 @Resolver('Auth')
 export class AuthResolver {

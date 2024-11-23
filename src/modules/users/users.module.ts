@@ -1,10 +1,9 @@
+import { userSchema } from '@modules/users/models/user.model';
+import { UsersRepository } from '@modules/users/models/users.repository';
+import { UsersResolver } from '@modules/users/resolvers/users.resolver';
+import { UserService } from '@modules/users/users.service';
 import { Module } from '@nestjs/common';
 import { DynamooseModule } from 'nestjs-dynamoose';
-
-import { userSchema } from './models/user.model';
-import { UsersRepository } from './models/users.repository';
-import { UsersResolver } from './resolvers/users.resolver';
-import { UserService } from './users.service';
 
 @Module({
     providers: [UsersResolver, UserService, UsersRepository],

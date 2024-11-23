@@ -1,3 +1,12 @@
+import { ChangePasswordDTO } from '@modules/auth/dto/change-password.dto';
+import { SignInDTO } from '@modules/auth/dto/sign-in.dto';
+import { SignUpDTO } from '@modules/auth/dto/sign-up.dto';
+import { Role } from '@modules/roles/roles.enum';
+import { TokensDTO } from '@modules/tokens/dto/tokens.dto';
+import { TokenModel } from '@modules/tokens/models/token.model';
+import { TokensRepository } from '@modules/tokens/models/tokens.repository';
+import { UserModel } from '@modules/users/models/user.model';
+import { UsersRepository } from '@modules/users/models/users.repository';
 import {
     ConflictException,
     ForbiddenException,
@@ -6,16 +15,6 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-
-import { Role } from '../roles/roles.enum';
-import { TokensDTO } from '../tokens/dto/tokens.dto';
-import { TokenModel } from '../tokens/models/token.model';
-import { TokensRepository } from '../tokens/models/tokens.repository';
-import { UserModel } from '../users/models/user.model';
-import { UsersRepository } from '../users/models/users.repository';
-import { ChangePasswordDTO } from './dto/change-password.dto';
-import { SignInDTO } from './dto/sign-in.dto';
-import { SignUpDTO } from './dto/sign-up.dto';
 
 @Injectable()
 export class AuthService {
