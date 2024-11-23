@@ -1,5 +1,6 @@
 import { UserKey, UserModel } from '@modules/users/models/user.model';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectModel, Model } from 'nestjs-dynamoose';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -15,10 +16,11 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
     constructor(
         @InjectModel('User')
         private userModel: Model<UserModel, UserKey>,
+        private configService: ConfigService,
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: process.env.JWT_ACCESS_SECRET,
+            secretOrKey: configService.get<string>('JWT_ACCESS_SECRET'),
         });
     }
 
