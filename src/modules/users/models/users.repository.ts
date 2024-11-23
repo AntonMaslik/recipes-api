@@ -42,6 +42,7 @@ export class UsersRepository {
         if (users.length > 0) {
             return users[0];
         }
+
         return null;
     }
 
@@ -57,6 +58,7 @@ export class UsersRepository {
         if (users.length > 0) {
             return users[0];
         }
+
         return null;
     }
 

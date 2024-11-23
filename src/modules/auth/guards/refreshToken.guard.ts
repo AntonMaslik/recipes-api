@@ -6,6 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 export class RefreshTokenGuard extends AuthGuard('jwt-refresh') {
     getRequest(context: ExecutionContext) {
         const ctx: GqlExecutionContext = GqlExecutionContext.create(context);
+
         return ctx.getContext().req;
     }
 }

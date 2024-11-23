@@ -15,6 +15,7 @@ export class TokensRepository {
 
     async softDelete(id: string): Promise<TokenModel> {
         const now: Date = new Date();
+
         return this.tokenModel.update({ id }, { deletedAt: now });
     }
 
@@ -34,6 +35,7 @@ export class TokensRepository {
         if (tokens.length > 0) {
             return tokens[0];
         }
+
         return null;
     }
 
