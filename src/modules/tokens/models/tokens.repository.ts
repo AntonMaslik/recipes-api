@@ -91,6 +91,7 @@ export class TokensRepository {
 
     async create(refreshToken: string, userId: string): Promise<TokenModel> {
         return this.tokenModel.create({
+            id: crypto.randomUUID(),
             refreshToken,
             userId,
         });
