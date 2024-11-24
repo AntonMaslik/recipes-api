@@ -13,6 +13,7 @@ import {
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
@@ -22,6 +23,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly usersRepository: UsersRepository,
         private readonly tokensRepository: TokensRepository,
+        private readonly configService: ConfigService,
     ) {}
 
     async signUp(signUpDto: SignUpDTO): Promise<TokensDTO> {
@@ -113,8 +115,12 @@ export class AuthService {
                     username,
                 },
                 {
-                    secret: process.env.JWT_ACCESS_SECRET,
-                    expiresIn: process.env.JWT_EXPIRATION_ACCESS_SECRET,
+                    secret: this.configService.getOrThrow<string>(
+                        'JWT_ACCESS_SECRET',
+                    ),
+                    expiresIn: this.configService.getOrThrow<string>(
+                        'JWT_EXPIRATION_ACCESS_SECRET',
+                    ),
                 },
             ),
             this.jwtService.signAsync(
@@ -123,8 +129,12 @@ export class AuthService {
                     username,
                 },
                 {
-                    secret: process.env.JWT_REFRESH_SECRET,
-                    expiresIn: process.env.JWT_EXPIRATION_REFRESH_SECRET,
+                    secret: this.configService.getOrThrow<string>(
+                        'JWT_REFRESH_SECRET',
+                    ),
+                    expiresIn: this.configService.getOrThrow<string>(
+                        'JWT_EXPIRATION_REFRESH_SECRET',
+                    ),
                 },
             ),
         ]);
