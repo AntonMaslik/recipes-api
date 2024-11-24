@@ -5,7 +5,7 @@ import { Role } from '@modules/roles/roles.enum';
 import { UserModel } from '@modules/users/models/user.model';
 import { User } from '@modules/users/object-types/users-object.type';
 import { UserService } from '@modules/users/users.service';
-import { Args, Context, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 @AccessGuard()
 @Resolver('User')
@@ -28,7 +28,7 @@ export class UsersResolver {
 
     @RolesGuard()
     @Roles(Role.ADMIN)
-    @Query(() => User)
+    @Mutation(() => User)
     async deleteUser(
         @Args('id', { type: () => String }) id: string,
     ): Promise<UserModel> {

@@ -25,10 +25,10 @@ type User {
 type Query {
   getUserById(id: String!): User!
   getMe: User!
-  deleteUser(id: String!): User!
 }
 
 type Mutation {
+  deleteUser(id: String!): User!
   logout: Boolean!
   signUp(input: SignUpDTO!): TokensDTO!
   signIn(input: SignInDTO!): TokensDTO!
