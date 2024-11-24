@@ -1,10 +1,9 @@
+import { dynamooseScheme } from '@app/config/db.schema';
 import { AuthService } from '@modules/auth/auth.service';
 import { AuthResolver } from '@modules/auth/resolves/auth.resolver';
 import { AccessTokenStrategy } from '@modules/auth/strategies/jwt-access-token.strategy';
 import { RefreshTokenStrategy } from '@modules/auth/strategies/jwt-refresh-token.strategy';
-import { tokenSchema } from '@modules/tokens/models/token.model';
 import { TokensRepository } from '@modules/tokens/models/tokens.repository';
-import { userSchema } from '@modules/users/models/user.model';
 import { UsersRepository } from '@modules/users/models/users.repository';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -36,22 +35,7 @@ import { DynamooseModule } from 'nestjs-dynamoose';
             }),
             inject: [ConfigService],
         }),
-        DynamooseModule.forFeature([
-            {
-                name: 'Token',
-                schema: tokenSchema,
-                options: {
-                    tableName: 'token',
-                },
-            },
-            {
-                name: 'User',
-                schema: userSchema,
-                options: {
-                    tableName: 'user',
-                },
-            },
-        ]),
+        DynamooseModule.forFeature(dynamooseScheme),
     ],
 })
 export class AuthModule {}
