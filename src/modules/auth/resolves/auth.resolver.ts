@@ -3,6 +3,7 @@ import { Cookie } from '@app/decorators/cookie.decorator';
 import { AccessGuard, RefreshGuard } from '@app/decorators/guard.decorators';
 import { User } from '@app/decorators/user.decorator';
 import { UserModel } from '@app/modules/users/models/user.model';
+import { GraphqlContext } from '@app/types/graphql.context';
 import { AuthService } from '@modules/auth/auth.service';
 import { ChangePasswordDTO } from '@modules/auth/dto/change-password.dto';
 import { SignInDTO } from '@modules/auth/dto/sign-in.dto';
@@ -22,7 +23,7 @@ export class AuthResolver {
     })
     async logout(
         @Cookie('refreshToken') refreshToken: string,
-        @Context() context: any,
+        @Context() context: GraphqlContext,
     ): Promise<boolean> {
         const { res } = context;
 
@@ -42,7 +43,7 @@ export class AuthResolver {
     })
     async signUp(
         @Args('input') signUpDTO: SignUpDTO,
-        @Context() context: any,
+        @Context() context: GraphqlContext,
     ): Promise<TokensDTO> {
         const { res } = context;
 
@@ -58,7 +59,7 @@ export class AuthResolver {
     })
     async signIn(
         @Args('input') signInDTO: SignInDTO,
-        @Context() context: any,
+        @Context() context: GraphqlContext,
     ): Promise<TokensDTO> {
         const { res } = context;
 
@@ -76,7 +77,7 @@ export class AuthResolver {
     async refreshToken(
         @User() user: UserModel,
         @Cookie('refreshToken') currentRefreshToken,
-        @Context() context: any,
+        @Context() context: GraphqlContext,
     ): Promise<TokensDTO> {
         const { res } = context;
 

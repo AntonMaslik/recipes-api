@@ -16,7 +16,16 @@ import { join } from 'path';
             autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
             playground: false,
             plugins: [ApolloServerPluginLandingPageLocalDefault()],
-            context: ({ req, res }) => ({ req, res }),
+            context: ({ req, res }) => {
+                const cookies = req.cookies;
+
+                return {
+                    req,
+                    res,
+                    user: req.user,
+                    cookies,
+                };
+            },
         }),
         DynamooseModule.forRoot({
             local: true,
