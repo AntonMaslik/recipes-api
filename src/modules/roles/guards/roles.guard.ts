@@ -1,10 +1,9 @@
+import { ROLES_KEY } from '@modules/roles/decorators/roles.decorator';
+import { Role } from '@modules/roles/roles.enum';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Observable } from 'rxjs';
-
-import { ROLES_KEY } from '../decorators/roles.decorator';
-import { Role } from '../roles.enum';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -12,6 +11,7 @@ export class RolesGuard implements CanActivate {
 
     getRequest(context: ExecutionContext) {
         const ctx: GqlExecutionContext = GqlExecutionContext.create(context);
+
         return ctx.getContext().req;
     }
 

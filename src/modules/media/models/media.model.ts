@@ -1,11 +1,10 @@
 import * as dynamoose from 'dynamoose';
-import { v4 as uuidv4 } from 'uuid';
 
 const mediaSchema = new dynamoose.Schema({
     id: {
         type: String,
         hashKey: true,
-        default: uuidv4,
+        default: crypto.randomUUID(),
     },
     fileName: {
         type: String,

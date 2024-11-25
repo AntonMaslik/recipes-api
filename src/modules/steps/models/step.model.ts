@@ -1,11 +1,10 @@
 import * as dynamose from 'dynamoose';
-import { v4 as uuidv4 } from 'uuid';
 
 const stepSchema = new dynamose.Schema({
     id: {
         type: String,
         hashKey: true,
-        default: uuidv4,
+        default: crypto.randomUUID(),
     },
     title: {
         type: String,
