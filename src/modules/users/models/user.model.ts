@@ -1,3 +1,4 @@
+import * as crypto from 'crypto';
 import * as dynamose from 'dynamoose';
 
 export const userSchema = new dynamose.Schema({
