@@ -1,6 +1,6 @@
 import * as dynamose from 'dynamoose';
 
-const recipeSchema = new dynamose.Schema({
+export const recipeSchema = new dynamose.Schema({
     id: {
         type: String,
         hashKey: true,

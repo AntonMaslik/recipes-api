@@ -1,4 +1,5 @@
 import { tokenSchema } from '@app/modules/tokens/models/token.model';
+import { recipeSchema } from '@modules/recipes/models/recipe.model';
 import { userSchema } from '@modules/users/models/user.model';
 import { ModelDefinition } from 'nestjs-dynamoose';
 
@@ -16,5 +17,9 @@ export const dynamooseScheme: ModelDefinition[] = [
         options: {
             tableName: 'user',
         },
+    },
+    {
+        name: 'Recipe',
+        schema: recipeSchema,
     },
 ];
