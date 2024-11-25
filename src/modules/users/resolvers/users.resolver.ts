@@ -1,11 +1,12 @@
-import { AccessGuard } from '@modules/auth/decorators/guard.decorators';
+import { AccessGuard } from '@app/decorators/guard.decorators';
+import { User as UserDecorator } from '@app/decorators/user.decorator';
 import { Roles } from '@modules/roles/decorators/roles.decorator';
 import { RolesGuard } from '@modules/roles/decorators/roles-guard.decorator';
 import { Role } from '@modules/roles/roles.enum';
 import { UserModel } from '@modules/users/models/user.model';
 import { User } from '@modules/users/object-types/users-object.type';
 import { UserService } from '@modules/users/users.service';
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 @AccessGuard()
 @Resolver('User')
@@ -20,10 +21,8 @@ export class UsersResolver {
     }
 
     @Query(() => User)
-    async getMe(@Context() context: any): Promise<UserModel> {
-        const { req } = context;
-
-        return this.usersService.getUserById(req.user.userDb.id);
+    async getMe(@UserDecorator() user: UserModel): Promise<UserModel> {
+        return this.usersService.getUserById(user.id);
     }
 
     @RolesGuard()
