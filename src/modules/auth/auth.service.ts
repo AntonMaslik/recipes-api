@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { generateHash } from '@utils/hash.util';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -35,10 +36,7 @@ export class AuthService {
             throw new ConflictException('User exists!');
         }
 
-        const hashedPassword: string = await bcrypt.hash(
-            signUpDto.password,
-            10,
-        );
+        const hashedPassword: string = await generateHash(signUpDto.password);
 
         const newUser = await this.usersRepository.create({
             name: signUpDto.name,
@@ -52,9 +50,8 @@ export class AuthService {
             newUser.name,
         );
 
-        const hashRefreshToken: string = await bcrypt.hash(
+        const hashRefreshToken: string = await generateHash(
             tokens.refreshToken,
-            10,
         );
 
         await this.tokensRepository.create(hashRefreshToken, newUser.id);
@@ -85,9 +82,8 @@ export class AuthService {
             user.name,
         );
 
-        const hashRefreshToken: string = await bcrypt.hash(
+        const hashRefreshToken: string = await generateHash(
             tokens.refreshToken,
-            10,
         );
 
         await this.tokensRepository.create(hashRefreshToken, user.id);
@@ -159,9 +155,8 @@ export class AuthService {
             user.name,
         );
 
-        const hashRefreshToken: string = await bcrypt.hash(
+        const hashRefreshToken: string = await generateHash(
             tokens.refreshToken,
-            10,
         );
 
         await this.tokensRepository.create(hashRefreshToken, user.id);
@@ -190,9 +185,8 @@ export class AuthService {
             throw new ForbiddenException('Wrong password');
         }
 
-        const hashNewPassword: string = await bcrypt.hash(
+        const hashNewPassword: string = await generateHash(
             changePasswordDto.newPassword,
-            10,
         );
 
         await this.usersRepository.update(userId, {
