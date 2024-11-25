@@ -6,6 +6,11 @@ export class CreateRecipeDTO {
     @IsString()
     @IsNotEmpty()
     @Field()
+    name: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @Field()
     title: string;
 
     @IsString()

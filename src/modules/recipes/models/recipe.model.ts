@@ -63,6 +63,7 @@ export interface RecipeKey {
 export interface RecipeModel extends RecipeKey {
     title?: string;
     body?: string;
+    name?: string;
     ingriditens?: string[];
     servingSize?: number;
     cookingTime?: string;
