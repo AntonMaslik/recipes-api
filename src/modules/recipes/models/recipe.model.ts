@@ -50,4 +50,17 @@ export const recipeSchema = new dynamose.Schema({
     },
 });
 
-export const recipeModel = dynamose.model('Recipe', recipeSchema);
+export interface RecipeKey {
+    id: string;
+}
+
+export interface RecipeModel extends RecipeKey {
+    title?: string;
+    body?: string;
+    ingriditens?: string[];
+    servingSize?: number;
+    cookingTime?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    deletedAt?: Date;
+}
