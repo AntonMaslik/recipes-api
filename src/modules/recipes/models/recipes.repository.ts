@@ -58,4 +58,36 @@ export class RecipesRepository {
     async update(updateRecipeDto: UpdateRecipeDTO): Promise<RecipeModel> {
         return this.recipeModel.update(updateRecipeDto);
     }
+
+    async findByLimit(
+        limit: number,
+        start: number,
+    ): Promise<ScanResponse<RecipeModel>> {
+        const recipes: ScanResponse<RecipeModel> = await this.recipeModel
+            .scan()
+            .limit(limit)
+            .startAt({
+                value: start,
+            })
+            .exec();
+
+        return recipes;
+    }
+
+    async findByLimitAndQuery(
+        query: string,
+        limit: number,
+        start: number,
+    ): Promise<QueryResponse<RecipeModel>> {
+        const recipes: QueryResponse<RecipeModel> = await this.recipeModel
+            .query('nameIndex')
+            .contains(query)
+            .limit(limit)
+            .startAt({
+                value: start,
+            })
+            .exec();
+
+        return recipes;
+    }
 }

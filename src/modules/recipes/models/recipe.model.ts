@@ -6,6 +6,12 @@ export const recipeSchema = new dynamose.Schema({
         hashKey: true,
         default: crypto.randomUUID(),
     },
+    name: {
+        type: String,
+        index: {
+            name: 'nameIndex',
+        },
+    },
     title: {
         type: String,
     },
