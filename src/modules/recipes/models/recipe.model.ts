@@ -51,7 +51,7 @@ export const recipeSchema = new dynamose.Schema({
 });
 
 export interface RecipeKey {
-    id: string;
+    id?: string;
 }
 
 export interface RecipeModel extends RecipeKey {
