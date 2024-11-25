@@ -13,6 +13,7 @@
     "paths": {
       "@app/*": ["src/*"],
       "@modules/*": ["src/modules/*"],
+      "@utils/*": ["src/utils/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

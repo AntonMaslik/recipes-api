@@ -89,6 +89,7 @@
   },
   "_moduleAliases": {
     "@app": "dist",
-    "@modules": "dist/modules"
+    "@modules": "dist/modules",
+    "@utils": "dist/utils"
   }
 }
