@@ -38,13 +38,8 @@ export class CreateRecipeDTO {
     @Field()
     cookingTime: string;
 
-    @IsNumber()
-    @IsNotEmpty()
-    @Field()
-    rating: number;
-
     @IsString()
     @IsNotEmpty()
-    @Field()
+    @Field({ nullable: true })
     userId: string;
 }

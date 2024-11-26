@@ -78,8 +78,7 @@ input CreateRecipeDTO {
   ingriditens: [String!]!
   servingSize: Float!
   cookingTime: String!
-  rating: Float!
-  userId: String!
+  userId: String
 }
 
 input UpdateRecipeDTO {
@@ -90,6 +89,5 @@ input UpdateRecipeDTO {
   ingriditens: [String!]!
   servingSize: Float!
   cookingTime: String!
-  rating: Float!
   userId: String!
 }

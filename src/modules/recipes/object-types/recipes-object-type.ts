@@ -27,10 +27,10 @@ export class Recipe {
     cookingTime: string;
 
     @Field()
-    rating: number;
+    rating?: number;
 
     @Field()
-    userId: string;
+    userId?: string;
 
     @Field()
     createdAt?: string;

@@ -38,11 +38,6 @@ export class UpdateRecipeDTO {
     @Field()
     cookingTime: string;
 
-    @IsNumber()
-    @IsNotEmpty()
-    @Field()
-    rating: number;
-
     @IsNotEmpty()
     @IsString()
     @Field()
