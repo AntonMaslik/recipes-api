@@ -9,7 +9,7 @@ import { UserService } from '@modules/users/users.service';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 @AccessGuard()
-@Resolver('User')
+@Resolver('Users')
 export class UsersResolver {
     constructor(private readonly usersService: UserService) {}
 

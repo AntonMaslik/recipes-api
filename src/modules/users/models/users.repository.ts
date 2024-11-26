@@ -1,6 +1,7 @@
 import { CreateUserDTO } from '@modules/users/dto/create-user.dto';
 import { UpdateUserDTO } from '@modules/users/dto/update-user.dto';
 import { UserKey, UserModel } from '@modules/users/models/user.model';
+import * as crypto from 'crypto';
 import { QueryResponse, ScanResponse } from 'nestjs-dynamoose';
 import { InjectModel, Model } from 'nestjs-dynamoose';
 
@@ -63,7 +64,10 @@ export class UsersRepository {
     }
 
     async create(createUserDto: CreateUserDTO): Promise<UserModel> {
-        return this.userModel.create(createUserDto);
+        return this.userModel.create({
+            ...createUserDto,
+            id: crypto.randomUUID(),
+        });
     }
 
     async update(id: string, updateUserDto: UpdateUserDTO): Promise<UserModel> {
