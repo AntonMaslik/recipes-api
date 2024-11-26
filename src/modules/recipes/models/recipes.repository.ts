@@ -1,6 +1,10 @@
 import { CreateRecipeDTO } from '@modules/recipes/dto/create-recipe.dto';
 import { UpdateRecipeDTO } from '@modules/recipes/dto/update-recipe.dto';
-import { RecipeKey, RecipeModel } from '@modules/recipes/models/recipe.model';
+import {
+    RecipeKey,
+    RecipeModel,
+    Step,
+} from '@modules/recipes/models/recipe.model';
 import * as crypto from 'crypto';
 import {
     InjectModel,
@@ -111,5 +115,15 @@ export class RecipesRepository {
             .exec();
 
         return recipes;
+    }
+
+    async createStep(id: string, newStep: Step): Promise<RecipeModel> {
+        const recipe = await this.recipeModel.get({ id });
+
+        recipe.steps = recipe.steps || [];
+
+        recipe.steps.push(newStep);
+
+        return this.recipeModel.update({ id }, recipe);
     }
 }

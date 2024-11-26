@@ -2,6 +2,7 @@ import * as crypto from 'crypto';
 import * as dynamose from 'dynamoose';
 
 const stepSchema = new dynamose.Schema({
+    id: String,
     title: String,
     body: String,
     position: Number,
@@ -68,7 +69,11 @@ export interface RecipeKey {
     id: string;
 }
 
-export interface Step {
+export interface StepKey {
+    id: string;
+}
+
+export interface Step extends StepKey {
     title: string;
     body: string;
     position: number;
