@@ -1,4 +1,5 @@
 import { CreateRecipeDTO } from '@modules/recipes/dto/create-recipe.dto';
+import { UpdateRecipeDTO } from '@modules/recipes/dto/update-recipe.dto';
 import { RecipeKey, RecipeModel } from '@modules/recipes/models/recipe.model';
 import * as crypto from 'crypto';
 import {
@@ -7,8 +8,6 @@ import {
     QueryResponse,
     ScanResponse,
 } from 'nestjs-dynamoose';
-
-import { UpdateRecipeDTO } from '../dto/update-recipe.dto';
 
 export class RecipesRepository {
     @InjectModel('Recipe')
