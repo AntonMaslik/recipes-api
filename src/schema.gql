@@ -40,6 +40,9 @@ type User {
 type Query {
   getUserById(id: String!): User!
   getMe: User!
+  getRecipeById(id: String!): Recipe!
+  getRecipesPage(page: Float!, limit: Float!): Recipe!
+  getRecipesQuery(query: String!, page: Float!, limit: Float!): Recipe!
 }
 
 type Mutation {
