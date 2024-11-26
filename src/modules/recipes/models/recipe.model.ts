@@ -1,6 +1,13 @@
 import * as crypto from 'crypto';
 import * as dynamose from 'dynamoose';
 
+const stepSchema = new dynamose.Schema({
+    title: String,
+    body: String,
+    position: Number,
+    media: String,
+});
+
 export const recipeSchema = new dynamose.Schema({
     id: {
         type: String,
@@ -24,6 +31,8 @@ export const recipeSchema = new dynamose.Schema({
     },
     ingriditens: {
         type: Array,
+        schema: [String],
+        required: true,
     },
     servingSize: {
         type: Number,
@@ -32,16 +41,14 @@ export const recipeSchema = new dynamose.Schema({
         type: String,
     },
     steps: {
-        type: Object,
-        schema: {
-            title: String,
-            body: String,
-            position: Number,
-            image: String,
-        },
+        type: Array,
+        schema: [stepSchema],
     },
     rating: {
         type: Number,
+    },
+    userId: {
+        type: String,
     },
     createdAt: {
         type: Date,
@@ -61,13 +68,24 @@ export interface RecipeKey {
     id?: string;
 }
 
+export interface Step {
+    title: string;
+    body: string;
+    position: number;
+    media: string;
+}
+
 export interface RecipeModel extends RecipeKey {
     title?: string;
     body?: string;
     name?: string;
+    image?: string;
     ingriditens?: string[];
+    steps?: Step[];
     servingSize?: number;
     cookingTime?: string;
+    rating?: number;
+    userId?: string;
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: Date;

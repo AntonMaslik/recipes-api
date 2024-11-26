@@ -1,3 +1,5 @@
+import { createStepDTO } from '@modules/recipes/dto/create-step.dto';
+import { Step } from '@modules/recipes/object-types/step-object-type';
 import { Field, InputType } from '@nestjs/graphql';
 import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
@@ -18,9 +20,19 @@ export class CreateRecipeDTO {
     @Field()
     body: string;
 
-    @IsArray()
+    @IsString()
     @IsNotEmpty()
     @Field()
+    image: string;
+
+    @IsArray()
+    @IsNotEmpty()
+    @Field(() => [createStepDTO])
+    steps: Step[];
+
+    @IsArray()
+    @IsNotEmpty()
+    @Field(() => [String])
     ingriditens: string[];
 
     @IsNumber()
@@ -32,4 +44,14 @@ export class CreateRecipeDTO {
     @IsNotEmpty()
     @Field()
     cookingTime: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    @Field()
+    rating?: number;
+
+    @IsString()
+    @IsNotEmpty()
+    @Field()
+    userId?: string;
 }

@@ -1,3 +1,4 @@
+import { Step } from '@modules/recipes/object-types/step-object-type';
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
@@ -17,7 +18,10 @@ export class Recipe {
     @Field()
     image?: string;
 
-    @Field()
+    @Field(() => [Step])
+    steps?: Step[];
+
+    @Field(() => [String])
     ingriditens?: string[];
 
     @Field()
@@ -25,6 +29,12 @@ export class Recipe {
 
     @Field()
     cookingTime?: string;
+
+    @Field()
+    rating?: number;
+
+    @Field()
+    userId?: string;
 
     @Field()
     createdAt?: string;

@@ -9,14 +9,16 @@ export class RecipesResolver {
     constructor(private readonly recipesService: RecipesService) {}
 
     @Mutation(() => Recipe)
-    async createRecipe(createRecipeDto: CreateRecipeDTO): Promise<Recipe> {
+    async createRecipe(
+        @Args('input') createRecipeDto: CreateRecipeDTO,
+    ): Promise<Recipe> {
         return this.recipesService.createRecipe(createRecipeDto);
     }
 
     @Mutation(() => Recipe)
     async updateRecipe(
         @Args('id', { type: () => String }) id: string,
-        updateRecipeDto: UpdateRecipeDTO,
+        @Args('input') updateRecipeDto: UpdateRecipeDTO,
     ): Promise<Recipe> {
         return this.recipesService.updateRecipe(id, updateRecipeDto);
     }
