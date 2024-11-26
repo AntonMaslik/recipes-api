@@ -118,12 +118,43 @@ export class RecipesRepository {
     }
 
     async createStep(id: string, newStep: Step): Promise<RecipeModel> {
-        const recipe = await this.recipeModel.get({ id });
+        const recipe = await this.findById(id);
 
         recipe.steps = recipe.steps || [];
 
         recipe.steps.push(newStep);
 
         return this.recipeModel.update({ id }, recipe);
+    }
+
+    async updateStep(
+        id: string,
+        stepId: string,
+        updatedStepData: Step,
+    ): Promise<RecipeModel> {
+        const recipe: RecipeModel = await this.findById(id);
+
+        const stepsFromRecipe: Step[] = recipe.steps;
+
+        const stepIndex: number = stepsFromRecipe.findIndex(
+            (step) => step.id === stepId,
+        );
+
+        stepsFromRecipe[stepIndex] = {
+            ...stepsFromRecipe[stepIndex],
+            ...updatedStepData,
+        };
+
+        recipe.steps = stepsFromRecipe;
+
+        return this.recipeModel.update({ id }, recipe);
+    }
+
+    async getStepById(id: string, stepId: string): Promise<Step> {
+        const recipe: RecipeModel = await this.findById(id);
+
+        const stepsFromRecipe: Step[] = recipe.steps;
+
+        return stepsFromRecipe.find((step) => step.id === stepId);
     }
 }
