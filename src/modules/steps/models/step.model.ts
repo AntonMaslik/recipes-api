@@ -1,6 +1,6 @@
 import * as dynamose from 'dynamoose';
 
-const recipeSchema = new dynamose.Schema({
+const stepSchema = new dynamose.Schema({
     id: {
         type: String,
         hashKey: true,
@@ -15,25 +15,7 @@ const recipeSchema = new dynamose.Schema({
     image: {
         type: String,
     },
-    ingriditens: {
-        type: Array,
-    },
-    servingSize: {
-        type: Number,
-    },
-    cookingTime: {
-        type: String,
-    },
-    steps: {
-        type: Object,
-        schema: {
-            title: String,
-            body: String,
-            position: Number,
-            image: String,
-        },
-    },
-    rating: {
+    position: {
         type: Number,
     },
     createdAt: {
@@ -50,4 +32,4 @@ const recipeSchema = new dynamose.Schema({
     },
 });
 
-export const recipeModel = dynamose.model('Recipe', recipeSchema);
+export const stepModel = dynamose.model('Step', stepSchema);

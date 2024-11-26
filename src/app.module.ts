@@ -1,6 +1,5 @@
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { AuthModule } from '@modules/auth/auth.module';
-import { RecipesModule } from '@modules/recipes/recipes.module';
 import { UsersModule } from '@modules/users/users.module';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
@@ -34,7 +33,6 @@ import { join } from 'path';
         }),
         UsersModule,
         AuthModule,
-        RecipesModule,
     ],
 })
 export class AppModule {}
