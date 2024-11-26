@@ -1,5 +1,6 @@
 import { CreateRecipeDTO } from '@modules/recipes/dto/create-recipe.dto';
 import { RecipeKey, RecipeModel } from '@modules/recipes/models/recipe.model';
+import * as crypto from 'crypto';
 import {
     InjectModel,
     Model,
@@ -52,7 +53,10 @@ export class RecipesRepository {
     }
 
     async create(createRecipeDto: CreateRecipeDTO): Promise<RecipeModel> {
-        return this.recipeModel.create(createRecipeDto);
+        return this.recipeModel.create({
+            ...createRecipeDto,
+            id: crypto.randomUUID(),
+        });
     }
 
     async update(
