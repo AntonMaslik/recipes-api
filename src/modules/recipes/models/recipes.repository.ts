@@ -55,8 +55,11 @@ export class RecipesRepository {
         return this.recipeModel.create(createRecipeDto);
     }
 
-    async update(updateRecipeDto: UpdateRecipeDTO): Promise<RecipeModel> {
-        return this.recipeModel.update(updateRecipeDto);
+    async update(
+        id: string,
+        updateRecipeDto: UpdateRecipeDTO,
+    ): Promise<RecipeModel> {
+        return this.recipeModel.update({ id }, updateRecipeDto);
     }
 
     async findByLimit(
