@@ -17,7 +17,7 @@ export class RecipesService {
         id: string,
         updateRecipesDto: UpdateRecipeDTO,
     ): Promise<RecipeModel> {
-        return this.recipesRepository.update(updateRecipesDto);
+        return this.recipesRepository.update(id, updateRecipesDto);
     }
 
     async deleteRecipeById(id: string): Promise<RecipeModel> {
