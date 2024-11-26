@@ -1,47 +1,40 @@
-import { Step } from '@modules/recipes/object-types/step-object-type';
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Recipe {
     @Field()
-    id?: string;
+    id: string;
 
     @Field()
-    name?: string;
+    name: string;
 
     @Field()
-    title?: string;
+    title: string;
 
     @Field()
-    body?: string;
+    body: string;
 
     @Field()
-    image?: string;
-
-    @Field(() => [Step])
-    steps?: Step[];
+    image: string;
 
     @Field(() => [String])
-    ingriditens?: string[];
+    ingriditens: string[];
 
     @Field()
-    servingSize?: number;
+    servingSize: number;
 
     @Field()
-    cookingTime?: string;
+    cookingTime: string;
 
     @Field()
-    rating?: number;
+    rating: number;
 
     @Field()
-    userId?: string;
+    userId: string;
 
     @Field()
     createdAt?: string;
 
     @Field()
     updatedAt?: string;
-
-    @Field()
-    deleteAt?: string;
 }

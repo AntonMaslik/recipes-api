@@ -32,7 +32,6 @@ export const recipeSchema = new dynamose.Schema({
     ingriditens: {
         type: Array,
         schema: [String],
-        required: true,
     },
     servingSize: {
         type: Number,
@@ -65,7 +64,7 @@ export const recipeSchema = new dynamose.Schema({
 });
 
 export interface RecipeKey {
-    id?: string;
+    id: string;
 }
 
 export interface Step {
@@ -76,16 +75,16 @@ export interface Step {
 }
 
 export interface RecipeModel extends RecipeKey {
-    title?: string;
-    body?: string;
-    name?: string;
-    image?: string;
-    ingriditens?: string[];
+    title: string;
+    body: string;
+    name: string;
+    image: string;
+    ingriditens: string[];
     steps?: Step[];
-    servingSize?: number;
-    cookingTime?: string;
-    rating?: number;
-    userId?: string;
+    servingSize: number;
+    cookingTime: string;
+    rating: number;
+    userId: string;
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: Date;

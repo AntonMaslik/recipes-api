@@ -1,3 +1,6 @@
+import { AccessGuard } from '@app/decorators/guard.decorators';
+import { User } from '@app/decorators/user.decorator';
+import { UserModel } from '@app/modules/users/models/user.model';
 import { CreateRecipeDTO } from '@modules/recipes/dto/create-recipe.dto';
 import { UpdateRecipeDTO } from '@modules/recipes/dto/update-recipe.dto';
 import { Recipe } from '@modules/recipes/object-types/recipes-object-type';
@@ -8,13 +11,16 @@ import { Args, Mutation, Resolver } from '@nestjs/graphql';
 export class RecipesResolver {
     constructor(private readonly recipesService: RecipesService) {}
 
+    @AccessGuard()
     @Mutation(() => Recipe)
     async createRecipe(
+        @User() user: UserModel,
         @Args('input') createRecipeDto: CreateRecipeDTO,
     ): Promise<Recipe> {
-        return this.recipesService.createRecipe(createRecipeDto);
+        return this.recipesService.createRecipe(user.id, createRecipeDto);
     }
 
+    @AccessGuard()
     @Mutation(() => Recipe)
     async updateRecipe(
         @Args('id', { type: () => String }) id: string,
@@ -23,6 +29,7 @@ export class RecipesResolver {
         return this.recipesService.updateRecipe(id, updateRecipeDto);
     }
 
+    @AccessGuard()
     @Mutation(() => Recipe)
     async deleteRecipeById(
         @Args('id', { type: () => String }) id: string,

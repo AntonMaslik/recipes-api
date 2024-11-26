@@ -51,6 +51,22 @@ export class RecipesRepository {
         return recipes[0];
     }
 
+    async findByName(name: string): Promise<RecipeModel> {
+        const recipes: QueryResponse<RecipeModel> = await this.recipeModel
+            .query('name')
+            .eq(name)
+            .where('deletedAt')
+            .not()
+            .exists()
+            .exec();
+
+        if (recipes.length <= 0) {
+            return null;
+        }
+
+        return recipes[0];
+    }
+
     async create(createRecipeDto: CreateRecipeDTO): Promise<RecipeModel> {
         return this.recipeModel.create({
             ...createRecipeDto,

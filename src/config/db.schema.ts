@@ -8,18 +8,21 @@ export const dynamooseScheme: ModelDefinition[] = [
         name: 'Token',
         schema: tokenSchema,
         options: {
-            tableName: 'token',
+            tableName: 'tokens',
         },
     },
     {
         name: 'User',
         schema: userSchema,
         options: {
-            tableName: 'user',
+            tableName: 'users',
         },
     },
     {
         name: 'Recipe',
         schema: recipeSchema,
+        options: {
+            tableName: 'recipes',
+        },
     },
 ];
