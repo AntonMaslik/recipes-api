@@ -1,4 +1,4 @@
-import { RecipeModel, Step } from '@app/modules/recipes/models/recipe.model';
+import { Step } from '@app/modules/recipes/models/recipe.model';
 import { RecipesRepository } from '@app/modules/recipes/models/recipes.repository';
 import { CreateStepDTO } from '@app/modules/steps/dto/create-step.dto';
 import { UpdateStepDTO } from '@app/modules/steps/dto/update-step.dto';
@@ -15,7 +15,7 @@ export class StepsService {
     async createStep(
         recipeId: string,
         createStepDto: CreateStepDTO,
-    ): Promise<RecipeModel> {
+    ): Promise<Step> {
         return this.recipesRepository.createStep(recipeId, createStepDto);
     }
 
@@ -23,14 +23,14 @@ export class StepsService {
         recipeId: string,
         id: string,
         updateStepDto: UpdateStepDTO,
-    ): Promise<RecipeModel> {
+    ): Promise<Step> {
         return this.recipesRepository.updateStep(recipeId, id, {
             ...updateStepDto,
             id,
         });
     }
 
-    async deleteStep(recipeId: string, id: string): Promise<RecipeModel> {
+    async deleteStep(recipeId: string, id: string): Promise<Step> {
         return this.recipesRepository.deleteStep(recipeId, id);
     }
 
@@ -38,7 +38,7 @@ export class StepsService {
         recipeId: string,
         id: string,
         position: number,
-    ): Promise<RecipeModel> {
+    ): Promise<Step> {
         return this.recipesRepository.updatePosition(recipeId, id, position);
     }
 }

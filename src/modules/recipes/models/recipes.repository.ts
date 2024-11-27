@@ -119,10 +119,7 @@ export class RecipesRepository {
         return recipes;
     }
 
-    async createStep(
-        id: string,
-        createStepDTO: CreateStepDTO,
-    ): Promise<RecipeModel> {
+    async createStep(id: string, createStepDTO: CreateStepDTO): Promise<Step> {
         const recipe: RecipeModel = await this.findById(id);
 
         if (!recipe) {
@@ -133,10 +130,12 @@ export class RecipesRepository {
 
         recipe.steps.push({ ...createStepDTO, id: crypto.randomUUID() });
 
-        return this.recipeModel.update(recipe);
+        await this.recipeModel.update(recipe);
+
+        return recipe.steps.at(-1);
     }
 
-    async deleteStep(id: string, stepId: string): Promise<RecipeModel> {
+    async deleteStep(id: string, stepId: string): Promise<Step> {
         const recipe: RecipeModel = await this.findById(id);
 
         const stepsFromRecipe: Step[] = recipe.steps;
@@ -145,18 +144,22 @@ export class RecipesRepository {
             (step) => step.id === stepId,
         );
 
+        const deletedItem: Step = stepsFromRecipe[stepIndex];
+
         delete stepsFromRecipe[stepIndex];
 
         recipe.steps = stepsFromRecipe;
 
-        return this.recipeModel.update({ id }, recipe);
+        await this.recipeModel.update(recipe);
+
+        return deletedItem;
     }
 
     async updateStep(
         id: string,
         stepId: string,
         updatedStepData: Step,
-    ): Promise<RecipeModel> {
+    ): Promise<Step> {
         const recipe: RecipeModel = await this.findById(id);
 
         const stepsFromRecipe: Step[] = recipe.steps;
@@ -173,14 +176,16 @@ export class RecipesRepository {
 
         recipe.steps = stepsFromRecipe;
 
-        return this.recipeModel.update({ id: recipe.id }, recipe);
+        await this.recipeModel.update(recipe);
+
+        return stepsFromRecipe[stepIndex];
     }
 
     async updatePosition(
         recipeId: string,
         id: string,
         position: number,
-    ): Promise<RecipeModel> {
+    ): Promise<Step> {
         const recipe: RecipeModel = await this.findById(recipeId);
 
         const stepsFromRecipe: Step[] = recipe.steps;
@@ -193,7 +198,9 @@ export class RecipesRepository {
 
         recipe.steps = stepsFromRecipe;
 
-        return this.recipeModel.update({ id: recipeId }, recipe);
+        await this.recipeModel.update(recipe);
+
+        return stepsFromRecipe[stepIndex];
     }
 
     async getStepById(recipeId: string, id: string): Promise<Step> {

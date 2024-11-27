@@ -1,4 +1,3 @@
-import { Recipe } from '@app/modules/recipes/object-types/recipes-object-type';
 import { CreateStepDTO } from '@app/modules/steps/dto/create-step.dto';
 import { UpdateStepDTO } from '@app/modules/steps/dto/update-step.dto';
 import { Step } from '@app/modules/steps/object-types/step-object-type';
@@ -9,37 +8,37 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 export class StepsResolver {
     constructor(private readonly stepsService: StepsService) {}
 
-    @Mutation(() => Recipe)
+    @Mutation(() => Step)
     async createStep(
         @Args('recipeId', { type: () => String }) recipeId: string,
         @Args('input') createStepDto: CreateStepDTO,
-    ): Promise<Recipe> {
+    ): Promise<Step> {
         return this.stepsService.createStep(recipeId, createStepDto);
     }
 
-    @Mutation(() => Recipe)
+    @Mutation(() => Step)
     async updateStep(
         @Args('recipeId', { type: () => String }) recipeId: string,
         @Args('id', { type: () => String }) id: string,
         @Args('input') updateStepDTO: UpdateStepDTO,
-    ): Promise<Recipe> {
+    ): Promise<Step> {
         return this.stepsService.updateStep(recipeId, id, updateStepDTO);
     }
 
-    @Mutation(() => Recipe)
+    @Mutation(() => Step)
     async deleteStep(
         @Args('recipeId', { type: () => String }) recipeId: string,
         @Args('id', { type: () => String }) id: string,
-    ): Promise<Recipe> {
+    ): Promise<Step> {
         return this.stepsService.deleteStep(recipeId, id);
     }
 
-    @Mutation(() => Recipe)
+    @Mutation(() => Step)
     async updatePosition(
         @Args('recipeId', { type: () => String }) recipeId: string,
         @Args('id', { type: () => String }) id: string,
         @Args('position', { type: () => Number }) position: number,
-    ): Promise<Recipe> {
+    ): Promise<Step> {
         return this.stepsService.updatePosition(recipeId, id, position);
     }
 
