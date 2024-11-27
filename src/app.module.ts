@@ -1,4 +1,5 @@
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { StepsModule } from '@app/modules/steps/steps.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { RecipesModule } from '@modules/recipes/recipes.module';
 import { UsersModule } from '@modules/users/users.module';
@@ -7,6 +8,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { DynamooseModule } from 'nestjs-dynamoose';
+import { MinioModule } from 'nestjs-minio-client';
 import { join } from 'path';
 
 @Module({
@@ -30,11 +32,23 @@ import { join } from 'path';
         }),
         DynamooseModule.forRoot({
             local: true,
-            aws: { region: 'fake-west-1' },
+            aws: {
+                region: 'us-east-1',
+                accessKeyId: 'key',
+                secretAccessKey: 'key',
+            },
+        }),
+        MinioModule.register({
+            endPoint: '127.0.0.1',
+            port: 9000,
+            useSSL: false,
+            accessKey: '',
+            secretKey: '',
         }),
         UsersModule,
         AuthModule,
         RecipesModule,
+        StepsModule,
     ],
 })
 export class AppModule {}

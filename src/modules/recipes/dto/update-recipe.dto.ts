@@ -38,8 +38,7 @@ export class UpdateRecipeDTO {
     @Field()
     cookingTime: string;
 
-    @IsNotEmpty()
     @IsString()
-    @Field()
+    @Field({ nullable: true })
     userId: string;
 }
