@@ -1,3 +1,4 @@
+import { CreateStepDTO } from '@app/modules/steps/dto/create-step.dto';
 import { CreateRecipeDTO } from '@modules/recipes/dto/create-recipe.dto';
 import { UpdateRecipeDTO } from '@modules/recipes/dto/update-recipe.dto';
 import {
@@ -5,6 +6,7 @@ import {
     RecipeModel,
     Step,
 } from '@modules/recipes/models/recipe.model';
+import { NotFoundException } from '@nestjs/common';
 import * as crypto from 'crypto';
 import {
     InjectModel,
@@ -117,14 +119,21 @@ export class RecipesRepository {
         return recipes;
     }
 
-    async createStep(id: string, newStep: Step): Promise<RecipeModel> {
+    async createStep(
+        id: string,
+        createStepDTO: CreateStepDTO,
+    ): Promise<RecipeModel> {
         const recipe: RecipeModel = await this.findById(id);
+
+        if (!recipe) {
+            throw new NotFoundException('Recipe not found')!;
+        }
 
         recipe.steps = recipe.steps || [];
 
-        recipe.steps.push(newStep);
+        recipe.steps.push({ ...createStepDTO, id: crypto.randomUUID() });
 
-        return this.recipeModel.update({ id }, recipe);
+        return this.recipeModel.update(recipe);
     }
 
     async deleteStep(id: string, stepId: string): Promise<RecipeModel> {
@@ -159,38 +168,49 @@ export class RecipesRepository {
         stepsFromRecipe[stepIndex] = {
             ...stepsFromRecipe[stepIndex],
             ...updatedStepData,
+            id: stepId,
         };
 
         recipe.steps = stepsFromRecipe;
 
-        return this.recipeModel.update({ id }, recipe);
+        return this.recipeModel.update({ id: recipe.id }, recipe);
     }
 
     async updatePosition(
+        recipeId: string,
         id: string,
-        stepId: string,
         position: number,
     ): Promise<RecipeModel> {
-        const recipe: RecipeModel = await this.findById(id);
+        const recipe: RecipeModel = await this.findById(recipeId);
 
         const stepsFromRecipe: Step[] = recipe.steps;
 
         const stepIndex: number = stepsFromRecipe.findIndex(
-            (step) => step.id === stepId,
+            (step) => step.id === id,
         );
 
         stepsFromRecipe[stepIndex].position = position;
 
         recipe.steps = stepsFromRecipe;
 
-        return this.recipeModel.update({ id }, recipe);
+        return this.recipeModel.update({ id: recipeId }, recipe);
     }
 
-    async getStepById(id: string, stepId: string): Promise<Step> {
-        const recipe: RecipeModel = await this.findById(id);
+    async getStepById(recipeId: string, id: string): Promise<Step> {
+        const recipe: RecipeModel = await this.findById(recipeId);
 
         const stepsFromRecipe: Step[] = recipe.steps;
 
-        return stepsFromRecipe.find((step) => step.id === stepId);
+        return stepsFromRecipe.find((step) => step.id === id);
+    }
+
+    async getStepsRecept(recipeId: string): Promise<Step[]> {
+        const recipe: RecipeModel = await this.findById(recipeId);
+
+        if (recipe.steps.length <= 0) {
+            return null;
+        }
+
+        return recipe.steps;
     }
 }
