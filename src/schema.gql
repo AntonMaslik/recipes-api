@@ -92,5 +92,5 @@ input UpdateRecipeDTO {
   ingriditens: [String!]!
   servingSize: Float!
   cookingTime: String!
-  userId: String!
+  userId: String
 }
