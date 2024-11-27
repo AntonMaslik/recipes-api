@@ -8,6 +8,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { DynamooseModule } from 'nestjs-dynamoose';
+import { MinioModule } from 'nestjs-minio-client';
 import { join } from 'path';
 
 @Module({
@@ -36,6 +37,13 @@ import { join } from 'path';
                 accessKeyId: 'key',
                 secretAccessKey: 'key',
             },
+        }),
+        MinioModule.register({
+            endPoint: '127.0.0.1',
+            port: 9000,
+            useSSL: false,
+            accessKey: '',
+            secretKey: '',
         }),
         UsersModule,
         AuthModule,
