@@ -9,7 +9,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 export class StepsResolver {
     constructor(private readonly stepsService: StepsService) {}
 
-    @Mutation(() => Step)
+    @Mutation(() => Recipe)
     async createStep(
         @Args('recipeId', { type: () => String }) recipeId: string,
         @Args('input') createStepDto: CreateStepDTO,
@@ -17,7 +17,7 @@ export class StepsResolver {
         return this.stepsService.createStep(recipeId, createStepDto);
     }
 
-    @Mutation(() => Step)
+    @Mutation(() => Recipe)
     async updateStep(
         @Args('recipeId', { type: () => String }) recipeId: string,
         @Args('id', { type: () => String }) id: string,
@@ -26,7 +26,7 @@ export class StepsResolver {
         return this.stepsService.updateStep(recipeId, id, updateStepDTO);
     }
 
-    @Mutation(() => Step)
+    @Mutation(() => Recipe)
     async deleteStep(
         @Args('recipeId', { type: () => String }) recipeId: string,
         @Args('id', { type: () => String }) id: string,
@@ -34,7 +34,7 @@ export class StepsResolver {
         return this.stepsService.deleteStep(recipeId, id);
     }
 
-    @Mutation(() => Step)
+    @Mutation(() => Recipe)
     async updatePosition(
         @Args('recipeId', { type: () => String }) recipeId: string,
         @Args('id', { type: () => String }) id: string,

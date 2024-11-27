@@ -2,6 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Recipe {
+  id: String!
+  name: String!
+  title: String!
+  body: String!
+  image: String!
+  ingriditens: [String!]!
+  servingSize: Float!
+  cookingTime: String!
+  rating: Float!
+  userId: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
 type Step {
   id: String!
   title: String!
@@ -18,21 +33,6 @@ type ChangePassword {
 type TokensDTO {
   accessToken: String!
   refreshToken: String!
-}
-
-type Recipe {
-  id: String!
-  name: String!
-  title: String!
-  body: String!
-  image: String!
-  ingriditens: [String!]!
-  servingSize: Float!
-  cookingTime: String!
-  rating: Float!
-  userId: String!
-  createdAt: String!
-  updatedAt: String!
 }
 
 type User {
@@ -64,10 +64,10 @@ type Mutation {
   createRecipe(input: CreateRecipeDTO!): Recipe!
   updateRecipe(id: String!, input: UpdateRecipeDTO!): Recipe!
   deleteRecipeById(id: String!): Recipe!
-  createStep(recipeId: String!, input: CreateStepDTO!): Step!
-  updateStep(recipeId: String!, id: String!, input: UpdateStepDTO!): Step!
-  deleteStep(recipeId: String!, id: String!): Step!
-  updatePosition(recipeId: String!, id: String!, position: Float!): Step!
+  createStep(recipeId: String!, input: CreateStepDTO!): Recipe!
+  updateStep(recipeId: String!, id: String!, input: UpdateStepDTO!): Recipe!
+  deleteStep(recipeId: String!, id: String!): Recipe!
+  updatePosition(recipeId: String!, id: String!, position: Float!): Recipe!
 }
 
 input SignUpDTO {
