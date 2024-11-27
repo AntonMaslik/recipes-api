@@ -30,7 +30,11 @@ import { join } from 'path';
         }),
         DynamooseModule.forRoot({
             local: true,
-            aws: { region: 'fake-west-1' },
+            aws: {
+                region: 'us-east-1',
+                accessKeyId: 'key',
+                secretAccessKey: 'key',
+            },
         }),
         UsersModule,
         AuthModule,
