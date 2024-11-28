@@ -7,6 +7,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
+import { MulterModule } from '@nestjs/platform-express';
 import { DynamooseModule } from 'nestjs-dynamoose';
 import { MinioModule } from 'nestjs-minio-client';
 import { join } from 'path';
@@ -44,6 +45,11 @@ import { join } from 'path';
             useSSL: false,
             accessKey: '',
             secretKey: '',
+        }),
+        MulterModule.register({
+            limits: {
+                fileSize: 5 * 1024 * 1024,
+            },
         }),
         UsersModule,
         AuthModule,
