@@ -1,4 +1,5 @@
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { MediaModule } from '@app/modules/media/media.module';
 import { StepsModule } from '@app/modules/steps/steps.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { RecipesModule } from '@modules/recipes/recipes.module';
@@ -55,6 +56,7 @@ import { join } from 'path';
         AuthModule,
         RecipesModule,
         StepsModule,
+        MediaModule,
     ],
 })
 export class AppModule {}
