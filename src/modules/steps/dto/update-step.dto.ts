@@ -1,24 +1,21 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 @InputType()
 export class UpdateStepDTO {
-    @IsNotEmpty()
     @IsString()
     @Field()
-    title: string;
+    title?: string;
 
-    @IsNotEmpty()
     @IsString()
     @Field()
-    body: string;
+    body?: string;
 
-    @IsNotEmpty()
     @IsNumber()
     @Field()
-    position: number;
+    position?: number;
 
     @IsString()
     @Field()
-    media: string;
+    media?: string;
 }
