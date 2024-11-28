@@ -39,7 +39,6 @@ export class CreateRecipeDTO {
     cookingTime: string;
 
     @IsString()
-    @IsNotEmpty()
     @Field({ nullable: true })
     userId: string;
 }

@@ -2,6 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Step {
+  id: String!
+  title: String!
+  body: String!
+  position: Float!
+  media: String!
+}
+
 type ChangePassword {
   currentPassword: String!
   newPassword: String!
@@ -40,6 +48,10 @@ type User {
 type Query {
   getUserById(id: String!): User!
   getMe: User!
+  getRecipeById(id: String!): Recipe!
+  getRecipesPage(page: Float!, limit: Float!): Recipe!
+  getRecipesQuery(query: String!, page: Float!, limit: Float!): Recipe!
+  getStepsRecipe(recipeId: String!): [Step!]!
 }
 
 type Mutation {
@@ -52,6 +64,10 @@ type Mutation {
   createRecipe(input: CreateRecipeDTO!): Recipe!
   updateRecipe(id: String!, input: UpdateRecipeDTO!): Recipe!
   deleteRecipeById(id: String!): Recipe!
+  createStep(recipeId: String!, input: CreateStepDTO!): Step!
+  updateStep(recipeId: String!, id: String!, input: UpdateStepDTO!): Step!
+  deleteStep(recipeId: String!, id: String!): Step!
+  updatePosition(recipeId: String!, id: String!, position: Float!): Step!
 }
 
 input SignUpDTO {
@@ -89,5 +105,19 @@ input UpdateRecipeDTO {
   ingriditens: [String!]!
   servingSize: Float!
   cookingTime: String!
-  userId: String!
+  userId: String
+}
+
+input CreateStepDTO {
+  title: String!
+  body: String!
+  position: Float!
+  media: String!
+}
+
+input UpdateStepDTO {
+  title: String!
+  body: String!
+  position: Float!
+  media: String!
 }
