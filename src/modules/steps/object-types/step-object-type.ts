@@ -3,17 +3,17 @@ import { Field, ObjectType } from '@nestjs/graphql';
 @ObjectType()
 export class Step {
     @Field()
-    id: string;
+    id?: string;
 
     @Field()
-    title: string;
+    title?: string;
 
     @Field()
-    body: string;
+    body?: string;
 
     @Field()
-    position: number;
+    position?: number;
 
     @Field()
-    media: string;
+    media?: string;
 }

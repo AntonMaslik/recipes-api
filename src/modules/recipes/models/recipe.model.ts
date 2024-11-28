@@ -70,14 +70,14 @@ export interface RecipeKey {
 }
 
 export interface StepKey {
-    id: string;
+    id?: string;
 }
 
 export interface Step extends StepKey {
-    title: string;
-    body: string;
-    position: number;
-    media: string;
+    title?: string;
+    body?: string;
+    position?: number;
+    media?: string;
 }
 
 export interface RecipeModel extends RecipeKey {

@@ -135,80 +135,99 @@ export class RecipesRepository {
         return recipe.steps.at(-1);
     }
 
-    async deleteStep(id: string, stepId: string): Promise<Step> {
-        const recipe: RecipeModel = await this.findById(id);
+    async deleteStep(id: string): Promise<Step> {
+        const recipes: RecipeModel[] = await this.findNonDeleted();
 
-        const stepsFromRecipe: Step[] = recipe.steps;
+        let stepIndex: number | undefined = undefined;
+        let recipeFind: RecipeModel | undefined = undefined;
+        for (const recipe of recipes) {
+            stepIndex = recipe.steps.findIndex((step) => step.id === id);
 
-        const stepIndex: number = stepsFromRecipe.findIndex(
-            (step) => step.id === stepId,
-        );
+            if (stepIndex !== undefined) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                recipeFind = recipe;
+                break;
+            }
+        }
 
-        const deletedItem: Step = stepsFromRecipe[stepIndex];
+        const deletedItem: Step = recipeFind.steps[stepIndex];
 
-        delete stepsFromRecipe[stepIndex];
+        delete recipeFind.steps[stepIndex];
 
-        recipe.steps = stepsFromRecipe;
-
-        await this.recipeModel.update(recipe);
+        await this.recipeModel.update(recipeFind);
 
         return deletedItem;
     }
 
-    async updateStep(
-        id: string,
-        stepId: string,
-        updatedStepData: Step,
-    ): Promise<Step> {
-        const recipe: RecipeModel = await this.findById(id);
+    async updateStep(id: string, updatedStepData: Step): Promise<Step> {
+        const recipes: RecipeModel[] = await this.findNonDeleted();
 
-        const stepsFromRecipe: Step[] = recipe.steps;
+        let stepIndex: number | undefined = undefined;
+        let recipeFind: RecipeModel | undefined = undefined;
+        for (const recipe of recipes) {
+            stepIndex = recipe.steps.findIndex((step) => step.id === id);
 
-        const stepIndex: number = stepsFromRecipe.findIndex(
-            (step) => step.id === stepId,
-        );
+            if (stepIndex !== undefined) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                recipeFind = recipe;
+                break;
+            }
+        }
 
-        stepsFromRecipe[stepIndex] = {
-            ...stepsFromRecipe[stepIndex],
+        recipeFind.steps[stepIndex] = {
+            ...recipeFind.steps[stepIndex],
             ...updatedStepData,
-            id: stepId,
+            id,
         };
 
-        recipe.steps = stepsFromRecipe;
+        await this.recipeModel.update(recipeFind);
 
-        await this.recipeModel.update(recipe);
-
-        return stepsFromRecipe[stepIndex];
+        return recipeFind.steps[stepIndex];
     }
 
-    async updatePosition(
-        recipeId: string,
-        id: string,
-        position: number,
-    ): Promise<Step> {
-        const recipe: RecipeModel = await this.findById(recipeId);
+    async updatePositionStep(id: string, position: number): Promise<Step> {
+        const recipes: RecipeModel[] = await this.findNonDeleted();
 
-        const stepsFromRecipe: Step[] = recipe.steps;
+        let stepIndex: number | undefined = undefined;
+        let recipeFind: RecipeModel | undefined = undefined;
+        for (const recipe of recipes) {
+            stepIndex = recipe.steps.findIndex((step) => step.id === id);
 
-        const stepIndex: number = stepsFromRecipe.findIndex(
-            (step) => step.id === id,
-        );
+            if (stepIndex !== undefined) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                recipeFind = recipe;
+                break;
+            }
+        }
 
-        stepsFromRecipe[stepIndex].position = position;
+        recipeFind.steps[stepIndex].position = position;
 
-        recipe.steps = stepsFromRecipe;
+        await this.recipeModel.update(recipeFind);
 
-        await this.recipeModel.update(recipe);
-
-        return stepsFromRecipe[stepIndex];
+        return recipeFind.steps[stepIndex];
     }
 
-    async getStepById(recipeId: string, id: string): Promise<Step> {
+    async getStepByIdFromRecept(recipeId: string, id: string): Promise<Step> {
         const recipe: RecipeModel = await this.findById(recipeId);
 
         const stepsFromRecipe: Step[] = recipe.steps;
 
         return stepsFromRecipe.find((step) => step.id === id);
+    }
+
+    async getStepById(id: string): Promise<Step> {
+        const recipes: RecipeModel[] = await this.findNonDeleted();
+
+        let step: Step | null = null;
+        for (const recipe of recipes) {
+            step = recipe.steps.find((step) => step.id === id);
+
+            if (step) {
+                break;
+            }
+        }
+
+        return step;
     }
 
     async getStepsRecept(recipeId: string): Promise<Step[]> {

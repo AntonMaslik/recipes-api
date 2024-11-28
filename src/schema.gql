@@ -65,9 +65,9 @@ type Mutation {
   updateRecipe(id: String!, input: UpdateRecipeDTO!): Recipe!
   deleteRecipeById(id: String!): Recipe!
   createStep(recipeId: String!, input: CreateStepDTO!): Step!
-  updateStep(recipeId: String!, id: String!, input: UpdateStepDTO!): Step!
-  deleteStep(recipeId: String!, id: String!): Step!
-  updatePosition(recipeId: String!, id: String!, position: Float!): Step!
+  updateStep(id: String!, input: UpdateStepDTO!): Step!
+  deleteStep(id: String!): Step!
+  updatePosition(id: String!, position: Float!): Step!
 }
 
 input SignUpDTO {

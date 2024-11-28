@@ -18,28 +18,25 @@ export class StepsResolver {
 
     @Mutation(() => Step)
     async updateStep(
-        @Args('recipeId', { type: () => String }) recipeId: string,
         @Args('id', { type: () => String }) id: string,
         @Args('input') updateStepDTO: UpdateStepDTO,
     ): Promise<Step> {
-        return this.stepsService.updateStep(recipeId, id, updateStepDTO);
+        return this.stepsService.updateStep(id, updateStepDTO);
     }
 
     @Mutation(() => Step)
     async deleteStep(
-        @Args('recipeId', { type: () => String }) recipeId: string,
         @Args('id', { type: () => String }) id: string,
     ): Promise<Step> {
-        return this.stepsService.deleteStep(recipeId, id);
+        return this.stepsService.deleteStep(id);
     }
 
     @Mutation(() => Step)
     async updatePosition(
-        @Args('recipeId', { type: () => String }) recipeId: string,
         @Args('id', { type: () => String }) id: string,
         @Args('position', { type: () => Number }) position: number,
     ): Promise<Step> {
-        return this.stepsService.updatePosition(recipeId, id, position);
+        return this.stepsService.updatePosition(id, position);
     }
 
     @Query(() => [Step])
