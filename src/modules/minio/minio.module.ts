@@ -7,8 +7,8 @@ import { MinioModule } from 'nestjs-minio-client';
             endPoint: '127.0.0.1',
             port: 9000,
             useSSL: false,
-            accessKey: '',
-            secretKey: '',
+            accessKey: 'minioadmin',
+            secretKey: 'minioadmin',
         }),
     ],
 })

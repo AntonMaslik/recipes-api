@@ -6,6 +6,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
+import { MulterModule } from '@nestjs/platform-express';
 import { DynamooseModule } from 'nestjs-dynamoose';
 import { join } from 'path';
 
@@ -31,6 +32,11 @@ import { join } from 'path';
         DynamooseModule.forRoot({
             local: true,
             aws: { region: 'fake-west-1' },
+        }),
+        MulterModule.register({
+            limits: {
+                fileSize: 5 * 1024 * 1024,
+            },
         }),
         UsersModule,
         AuthModule,

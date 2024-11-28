@@ -1,45 +1,37 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsString } from 'class-validator';
 
 @InputType()
 export class UpdateRecipeDTO {
     @IsString()
-    @IsNotEmpty()
     @Field()
-    name: string;
+    name?: string;
 
     @IsString()
-    @IsNotEmpty()
     @Field()
-    title: string;
+    title?: string;
 
     @IsString()
-    @IsNotEmpty()
     @Field()
-    body: string;
+    body?: string;
 
     @IsString()
-    @IsNotEmpty()
     @Field()
-    image: string;
+    image?: string;
 
     @IsArray()
-    @IsNotEmpty()
     @Field(() => [String])
-    ingriditens: string[];
+    ingriditens?: string[];
 
     @IsNumber()
-    @IsNotEmpty()
     @Field()
-    servingSize: number;
+    servingSize?: number;
 
     @IsString()
-    @IsNotEmpty()
     @Field()
-    cookingTime: string;
+    cookingTime?: string;
 
-    @IsNotEmpty()
     @IsString()
     @Field()
-    userId: string;
+    userId?: string;
 }

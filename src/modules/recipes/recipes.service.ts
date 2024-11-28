@@ -2,12 +2,22 @@ import { CreateRecipeDTO } from '@modules/recipes/dto/create-recipe.dto';
 import { UpdateRecipeDTO } from '@modules/recipes/dto/update-recipe.dto';
 import { RecipeModel } from '@modules/recipes/models/recipe.model';
 import { RecipesRepository } from '@modules/recipes/models/recipes.repository';
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+    ConflictException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
+import * as crypto from 'crypto';
 import { QueryResponse, ScanResponse } from 'nestjs-dynamoose';
+import { MinioService } from 'nestjs-minio-client';
+import * as url from 'url';
 
 @Injectable()
 export class RecipesService {
-    constructor(private readonly recipesRepository: RecipesRepository) {}
+    constructor(
+        private readonly recipesRepository: RecipesRepository,
+        private readonly minioService: MinioService,
+    ) {}
 
     async createRecipe(
         userId: string,
@@ -66,5 +76,56 @@ export class RecipesService {
         const start: number = (page - 1) * limit;
 
         return this.recipesRepository.findByLimitAndQuery(query, limit, start);
+    }
+
+    async bindImage(id: string, file: Express.Multer.File): Promise<string> {
+        const bucketName: string = 'recipe-images';
+        const objectName: string = `${crypto.randomUUID()}`;
+
+        const urlPath: string = `127.0.0.1:9000/${bucketName}/${objectName}`;
+
+        try {
+            await this.minioService.client.bucketExists(bucketName);
+
+            await this.minioService.client.putObject(
+                bucketName,
+                objectName,
+                file.buffer,
+            );
+
+            await this.updateRecipe(id, {
+                image: urlPath,
+            });
+        } catch (error) {
+            return error;
+        }
+
+        return urlPath;
+    }
+
+    async unbindImage(id: string): Promise<boolean> {
+        const recipe: RecipeModel = await this.getRecipeById(id);
+
+        if (!recipe) {
+            throw new NotFoundException('Recipe not find!');
+        }
+
+        const parsedUrl: url.UrlWithStringQuery = url.parse(recipe.image);
+
+        const bucketName: string = parsedUrl.pathname?.split('/')[1];
+        const objectName: string = parsedUrl.pathname
+            ?.split('/')
+            .slice(2)
+            .join('/');
+
+        try {
+            await this.minioService.client.removeObject(bucketName, objectName);
+
+            await this.updateRecipe(id, { image: '' });
+        } catch (error) {
+            return error;
+        }
+
+        return true;
     }
 }
