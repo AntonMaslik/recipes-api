@@ -16,7 +16,7 @@ export class TasksService {
         private readonly rateModel: Model<RateModel, RateKey>,
     ) {}
 
-    @Cron(CronExpression.EVERY_30_SECONDS)
+    @Cron(CronExpression.EVERY_2_HOURS)
     async handleCron() {
         const recipes: ScanResponse<RecipeModel> =
             await this.recipesRepository.findNonDeleted();
