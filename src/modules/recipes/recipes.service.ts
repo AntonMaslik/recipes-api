@@ -7,6 +7,7 @@ import {
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import { QueryResponse, ScanResponse } from 'nestjs-dynamoose';
 import { MinioService } from 'nestjs-minio-client';
@@ -16,7 +17,10 @@ import * as url from 'url';
 export class RecipesService {
     constructor(
         private readonly recipesRepository: RecipesRepository,
+
         private readonly minioService: MinioService,
+
+        private readonly configService: ConfigService,
     ) {}
 
     async createRecipe(
@@ -82,7 +86,7 @@ export class RecipesService {
         const bucketName: string = 'recipe-images';
         const objectName: string = `${crypto.randomUUID()}`;
 
-        const urlPath: string = `127.0.0.1:9000/${bucketName}/${objectName}`;
+        const urlPath: string = `${this.configService.getOrThrow<string>('MINIO_ENDPOINT')}/${bucketName}/${objectName}`;
 
         try {
             await this.minioService.client.bucketExists(bucketName);

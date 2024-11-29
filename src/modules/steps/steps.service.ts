@@ -3,6 +3,7 @@ import { RecipesRepository } from '@app/modules/recipes/models/recipes.repositor
 import { CreateStepDTO } from '@app/modules/steps/dto/create-step.dto';
 import { UpdateStepDTO } from '@app/modules/steps/dto/update-step.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { MinioService } from 'nestjs-minio-client';
 import * as url from 'url';
 
@@ -10,7 +11,10 @@ import * as url from 'url';
 export class StepsService {
     constructor(
         private readonly recipesRepository: RecipesRepository,
+
         private readonly minioService: MinioService,
+
+        private readonly configService: ConfigService,
     ) {}
 
     async getStepsRecipe(recipeId: string): Promise<Step[]> {
@@ -42,7 +46,7 @@ export class StepsService {
         const bucketName: string = 'steps-images';
         const objectName: string = crypto.randomUUID();
 
-        const urlPath: string = `127.0.0.1:9000/${bucketName}/${objectName}`;
+        const urlPath: string = `${this.configService.getOrThrow<string>('MINIO_ENDPOINT')}/${bucketName}/${objectName}`;
 
         try {
             await this.minioService.client.bucketExists(bucketName);

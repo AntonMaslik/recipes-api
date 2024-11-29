@@ -1,9 +1,11 @@
 import { dynamooseScheme } from '@app/config/db.schema';
+import { getMinioConfig } from '@app/config/minio.config';
 import { RecipesRepository } from '@app/modules/recipes/models/recipes.repository';
 import { StepsImageController } from '@app/modules/steps/controllers/step-image.controller';
 import { StepsResolver } from '@app/modules/steps/resolves/steps.resolver';
 import { StepsService } from '@app/modules/steps/steps.service';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DynamooseModule } from 'nestjs-dynamoose';
 import { MinioModule } from 'nestjs-minio-client';
 
@@ -12,12 +14,11 @@ import { MinioModule } from 'nestjs-minio-client';
     exports: [StepsService],
     imports: [
         DynamooseModule.forFeature(dynamooseScheme),
-        MinioModule.register({
-            endPoint: '127.0.0.1',
-            port: 9000,
-            useSSL: false,
-            accessKey: '',
-            secretKey: '',
+        MinioModule.registerAsync({
+            imports: [ConfigModule],
+            useFactory: (configService: ConfigService) =>
+                getMinioConfig(configService),
+            inject: [ConfigService],
         }),
     ],
     controllers: [StepsImageController],
