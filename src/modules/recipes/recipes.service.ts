@@ -83,6 +83,12 @@ export class RecipesService {
     }
 
     async bindImage(id: string, file: Express.Multer.File): Promise<string> {
+        const recipe: RecipeModel = await this.recipesRepository.findById(id);
+
+        if (!recipe) {
+            throw new NotFoundException('Recipe not find!');
+        }
+
         const bucketName: string = 'recipe-images';
         const objectName: string = `${crypto.randomUUID()}`;
 
@@ -97,8 +103,12 @@ export class RecipesService {
                 file.buffer,
             );
 
-            await this.updateRecipe(id, {
+            delete recipe.id;
+            delete recipe.image;
+
+            await this.recipesRepository.update(id, {
                 image: urlPath,
+                ...recipe,
             });
         } catch (error) {
             return error;
@@ -125,7 +135,10 @@ export class RecipesService {
         try {
             await this.minioService.client.removeObject(bucketName, objectName);
 
-            await this.updateRecipe(id, { image: '' });
+            delete recipe.id;
+            delete recipe.image;
+
+            await this.updateRecipe(id, { image: '', ...recipe });
         } catch (error) {
             return error;
         }
