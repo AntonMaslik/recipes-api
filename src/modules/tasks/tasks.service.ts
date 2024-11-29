@@ -31,6 +31,7 @@ export class TasksService {
             return;
         }
 
+        // O(n * m) - не очень хорошо, можно быстрее (Anton)
         for (const recipe of recipes) {
             let sumRatingForRecept: number = 0;
             let countReceptItem: number = 0;

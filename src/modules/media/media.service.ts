@@ -30,7 +30,6 @@ export class MediaService {
                 res.status(404).send('Media not found');
             }
         } catch (error) {
-            console.log(error);
             res.status(505).send(error);
         }
     }
