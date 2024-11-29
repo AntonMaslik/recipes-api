@@ -1,9 +1,8 @@
 import { RateKey, RateModel } from '@app/modules/rate/models/rate.model';
 import { RecipeModel } from '@app/modules/recipes/models/recipe.model';
 import { RecipesRepository } from '@app/modules/recipes/models/recipes.repository';
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { log } from 'console';
 import { InjectModel, Model, ScanResponse } from 'nestjs-dynamoose';
 
 @Injectable()
