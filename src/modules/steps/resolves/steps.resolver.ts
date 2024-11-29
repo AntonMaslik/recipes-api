@@ -1,9 +1,11 @@
+import { AccessGuard } from '@app/decorators/guard.decorators';
 import { CreateStepDTO } from '@app/modules/steps/dto/create-step.dto';
 import { UpdateStepDTO } from '@app/modules/steps/dto/update-step.dto';
 import { Step } from '@app/modules/steps/object-types/step-object-type';
 import { StepsService } from '@app/modules/steps/steps.service';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
+@AccessGuard()
 @Resolver('Steps')
 export class StepsResolver {
     constructor(private readonly stepsService: StepsService) {}

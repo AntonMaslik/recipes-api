@@ -1,3 +1,4 @@
+import { AccessGuard } from '@app/decorators/guard.decorators';
 import { StepsService } from '@app/modules/steps/steps.service';
 import {
     BadRequestException,
@@ -9,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+@AccessGuard()
 @Controller('steps')
 export class StepsImageController {
     constructor(private readonly stepsService: StepsService) {}

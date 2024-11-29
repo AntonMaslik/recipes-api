@@ -9,6 +9,7 @@ import { RecipesService } from '@modules/recipes/recipes.service';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { QueryResponse, ScanResponse } from 'nestjs-dynamoose';
 
+@AccessGuard()
 @Resolver('Recipes')
 export class RecipesResolver {
     constructor(private readonly recipesService: RecipesService) {}

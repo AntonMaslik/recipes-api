@@ -5,6 +5,7 @@ import { RateService } from '@app/modules/rate/rate.service';
 import { UserModel } from '@app/modules/users/models/user.model';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 
+@AccessGuard()
 @Resolver('Rate')
 export class RateResolver {
     constructor(private readonly rateService: RateService) {}

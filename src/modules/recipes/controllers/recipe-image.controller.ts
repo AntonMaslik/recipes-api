@@ -1,3 +1,4 @@
+import { AccessGuard } from '@app/decorators/guard.decorators';
 import { RecipesService } from '@app/modules/recipes/recipes.service';
 import {
     BadRequestException,
@@ -9,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+@AccessGuard()
 @Controller('recipes')
 export class RecipesImageController {
     constructor(private readonly recipesService: RecipesService) {}
