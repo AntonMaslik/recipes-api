@@ -1,4 +1,6 @@
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { getDynamooseConfig } from '@app/config/dynamoose.config';
+import { getMinioConfig } from '@app/config/minio.config';
 import { MediaModule } from '@app/modules/media/media.module';
 import { StepsModule } from '@app/modules/steps/steps.module';
 import { AuthModule } from '@modules/auth/auth.module';
@@ -6,7 +8,7 @@ import { RecipesModule } from '@modules/recipes/recipes.module';
 import { UsersModule } from '@modules/users/users.module';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MulterModule } from '@nestjs/platform-express';
 import { DynamooseModule } from 'nestjs-dynamoose';
@@ -32,20 +34,17 @@ import { join } from 'path';
                 };
             },
         }),
-        DynamooseModule.forRoot({
-            local: true,
-            aws: {
-                region: 'us-east-1',
-                accessKeyId: 'key',
-                secretAccessKey: 'key',
-            },
+        DynamooseModule.forRootAsync({
+            imports: [ConfigModule],
+            useFactory: (configService: ConfigService) =>
+                getDynamooseConfig(configService),
+            inject: [ConfigService],
         }),
-        MinioModule.register({
-            endPoint: '127.0.0.1',
-            port: 9000,
-            useSSL: false,
-            accessKey: '',
-            secretKey: '',
+        MinioModule.registerAsync({
+            imports: [ConfigModule],
+            useFactory: (configService: ConfigService) =>
+                getMinioConfig(configService),
+            inject: [ConfigService],
         }),
         MulterModule.register({
             limits: {

@@ -19,8 +19,6 @@ export class MediaService {
                 const objectStream: internal.Readable =
                     await this.minioService.client.getObject(bucket.name, id);
 
-                console.log(objectStream);
-
                 res.setHeader('ContentType', 'application/octet-stream');
                 objectStream.pipe(res);
 

@@ -7,6 +7,7 @@ import {
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import { QueryResponse, ScanResponse } from 'nestjs-dynamoose';
 import { MinioService } from 'nestjs-minio-client';
@@ -16,7 +17,10 @@ import * as url from 'url';
 export class RecipesService {
     constructor(
         private readonly recipesRepository: RecipesRepository,
+
         private readonly minioService: MinioService,
+
+        private readonly configService: ConfigService,
     ) {}
 
     async createRecipe(
@@ -79,10 +83,16 @@ export class RecipesService {
     }
 
     async bindImage(id: string, file: Express.Multer.File): Promise<string> {
+        const recipe: RecipeModel = await this.recipesRepository.findById(id);
+
+        if (!recipe) {
+            throw new NotFoundException('Recipe not find!');
+        }
+
         const bucketName: string = 'recipe-images';
         const objectName: string = `${crypto.randomUUID()}`;
 
-        const urlPath: string = `127.0.0.1:9000/${bucketName}/${objectName}`;
+        const urlPath: string = `${this.configService.getOrThrow<string>('MINIO_ENDPOINT')}:${this.configService.getOrThrow<string>('MINIO_PORT')}/${bucketName}/${objectName}`;
 
         try {
             await this.minioService.client.bucketExists(bucketName);
@@ -93,8 +103,12 @@ export class RecipesService {
                 file.buffer,
             );
 
-            await this.updateRecipe(id, {
+            delete recipe.id;
+            delete recipe.image;
+
+            await this.recipesRepository.update(id, {
                 image: urlPath,
+                ...recipe,
             });
         } catch (error) {
             return error;
@@ -121,7 +135,10 @@ export class RecipesService {
         try {
             await this.minioService.client.removeObject(bucketName, objectName);
 
-            await this.updateRecipe(id, { image: '' });
+            delete recipe.id;
+            delete recipe.image;
+
+            await this.updateRecipe(id, { image: '', ...recipe });
         } catch (error) {
             return error;
         }
