@@ -2,7 +2,9 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import { getDynamooseConfig } from '@app/config/dynamoose.config';
 import { getMinioConfig } from '@app/config/minio.config';
 import { MediaModule } from '@app/modules/media/media.module';
+import { RateModule } from '@app/modules/rate/rate.module';
 import { StepsModule } from '@app/modules/steps/steps.module';
+import { TasksModule } from '@app/modules/tasks/tasks.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { RecipesModule } from '@modules/recipes/recipes.module';
 import { UsersModule } from '@modules/users/users.module';
@@ -56,6 +58,8 @@ import { join } from 'path';
         RecipesModule,
         StepsModule,
         MediaModule,
+        RateModule,
+        TasksModule,
     ],
 })
 export class AppModule {}

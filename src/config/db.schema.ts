@@ -1,3 +1,4 @@
+import { rateSchema } from '@app/modules/rate/models/rate.model';
 import { tokenSchema } from '@app/modules/tokens/models/token.model';
 import { recipeSchema } from '@modules/recipes/models/recipe.model';
 import { userSchema } from '@modules/users/models/user.model';
@@ -23,6 +24,13 @@ export const dynamooseScheme: ModelDefinition[] = [
         schema: recipeSchema,
         options: {
             tableName: 'recipes',
+        },
+    },
+    {
+        name: 'Rate',
+        schema: rateSchema,
+        options: {
+            tableName: 'rates',
         },
     },
 ];

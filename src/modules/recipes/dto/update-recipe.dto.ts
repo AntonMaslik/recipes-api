@@ -19,6 +19,10 @@ export class UpdateRecipeDTO {
     @Field()
     image?: string;
 
+    @IsNumber()
+    @Field()
+    rating?: number;
+
     @IsArray()
     @Field(() => [String])
     ingriditens?: string[];
