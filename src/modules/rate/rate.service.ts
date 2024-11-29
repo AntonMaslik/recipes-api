@@ -17,7 +17,7 @@ export class RateService {
         const existingRate = await this.rateModel
             .query('recipeId')
             .eq(recipeId)
-            .where('userRatingId')
+            .where('userId')
             .eq(userId)
             .exec();
 
