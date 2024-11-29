@@ -16,7 +16,6 @@ export class RateResolver {
         @Args('evaluation', { type: () => Number }) evaluation: number,
         @User() user: UserModel,
     ) {
-        console.log(user);
         return this.rateService.createEvaluation(recipeId, user.id, evaluation);
     }
 }
