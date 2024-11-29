@@ -1,9 +1,19 @@
-export const dynamooseConfig = {
-    local: process.env.DYNAMOOSE_LOCAL === 'true',
+import { ConfigService } from '@nestjs/config';
+
+export const getDynamooseConfig = (configService: ConfigService) => ({
+    local: configService.getOrThrow<string>('DYNAMOOSE_LOCAL'),
     aws: {
-        accessKeyId: process.env.DYNAMOOSE_ACCESS_KEY_ID || 'your-access-key',
-        secretAccessKey:
-            process.env.DYNAMOOSE_SECRET_ACCESS_KEY || 'your-secret-key',
-        region: process.env.DYNAMOOSE_REGION || 'us-east-1',
+        accessKeyId: configService.getOrThrow<string>(
+            'DYNAMOOSE_ACCESS_KEY_ID',
+            'your-access-key',
+        ),
+        secretAccessKey: configService.getOrThrow<string>(
+            'DYNAMOOSE_SECRET_ACCESS_KEY',
+            'your-secret-key',
+        ),
+        region: configService.getOrThrow<string>(
+            'DYNAMOOSE_REGION',
+            'us-east-1',
+        ),
     },
-};
+});

@@ -1,5 +1,5 @@
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import { dynamooseConfig } from '@app/config/dynamoose.config';
+import { getDynamooseConfig } from '@app/config/dynamoose.config';
 import { getMinioConfig } from '@app/config/minio.config';
 import { MediaModule } from '@app/modules/media/media.module';
 import { StepsModule } from '@app/modules/steps/steps.module';
@@ -35,10 +35,10 @@ import { join } from 'path';
             },
         }),
         DynamooseModule.forRootAsync({
-            useFactory: async () => ({
-                local: dynamooseConfig.local,
-                aws: dynamooseConfig.aws,
-            }),
+            imports: [ConfigModule],
+            useFactory: (configService: ConfigService) =>
+                getDynamooseConfig(configService),
+            inject: [ConfigService],
         }),
         MinioModule.registerAsync({
             imports: [ConfigModule],

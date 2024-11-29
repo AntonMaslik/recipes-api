@@ -86,7 +86,7 @@ export class RecipesService {
         const bucketName: string = 'recipe-images';
         const objectName: string = `${crypto.randomUUID()}`;
 
-        const urlPath: string = `${this.configService.getOrThrow<string>('MINIO_ENDPOINT')}/${bucketName}/${objectName}`;
+        const urlPath: string = `${this.configService.getOrThrow<string>('MINIO_ENDPOINT')}:${this.configService.getOrThrow<string>('MINIO_PORT')}/${bucketName}/${objectName}`;
 
         try {
             await this.minioService.client.bucketExists(bucketName);
