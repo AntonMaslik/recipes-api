@@ -7,11 +7,9 @@ services:
         ports:
             - '9000:9000'
             - '9001:9001'
-        environment:
-            MINIO_ROOT_USER: minioadmin
-            MINIO_ROOT_PASSWORD: minioadmin
-            MINIO_SECRET_KEY: minioadmin
-            MINIO_ACCESS_KEY: minioadmin
+        environment: 
+            MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+            MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
         command: server /data --console-address ":9001"
         volumes:
             - minio_data:/data
@@ -30,7 +28,7 @@ services:
         ports:
             - '8001:8001'
         environment:
-            DYNAMO_ENDPOINT: http://dynamodb:8000 
+            DYNAMO_ENDPOINT: ${DYNAMO_ENDPOINT}
         depends_on:
             - dynamodb
 
