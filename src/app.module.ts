@@ -37,15 +37,11 @@ import { join } from 'path';
             },
         }),
         DynamooseModule.forRootAsync({
-            imports: [ConfigModule],
-            useFactory: (configService: ConfigService) =>
-                getDynamooseConfig(configService),
+            useFactory: getDynamooseConfig,
             inject: [ConfigService],
         }),
         MinioModule.registerAsync({
-            imports: [ConfigModule],
-            useFactory: (configService: ConfigService) =>
-                getMinioConfig(configService),
+            useFactory: getMinioConfig,
             inject: [ConfigService],
         }),
         MulterModule.register({
