@@ -27,9 +27,7 @@ export class StepsService {
     }
 
     async updateStep(id: string, updateStepDto: UpdateStepDTO): Promise<Step> {
-        return this.recipesRepository.updateStep(id, {
-            ...updateStepDto,
-        });
+        return this.recipesRepository.updateStep(id, updateStepDto);
     }
 
     async deleteStep(id: string): Promise<Step> {
