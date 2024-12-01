@@ -93,12 +93,9 @@ export class RecipesService {
                 file.buffer,
             );
 
-            delete recipe.id;
-            delete recipe.image;
-
             await this.recipesRepository.update(id, {
-                image: urlPath,
                 ...recipe,
+                image: urlPath,
             });
         } catch (error) {
             return error;
