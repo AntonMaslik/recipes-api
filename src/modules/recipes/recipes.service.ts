@@ -126,10 +126,7 @@ export class RecipesService {
         try {
             await this.minioService.client.removeObject(bucketName, objectName);
 
-            delete recipe.id;
-            delete recipe.image;
-
-            await this.updateRecipe(id, { image: '', ...recipe });
+            await this.updateRecipe(id, { ...recipe, image: null });
         } catch (error) {
             return error;
         }
