@@ -5,7 +5,7 @@ import { StepsImageController } from '@app/modules/steps/controllers/step-image.
 import { StepsResolver } from '@app/modules/steps/resolves/steps.resolver';
 import { StepsService } from '@app/modules/steps/steps.service';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { DynamooseModule } from 'nestjs-dynamoose';
 import { MinioModule } from 'nestjs-minio-client';
 
@@ -15,9 +15,7 @@ import { MinioModule } from 'nestjs-minio-client';
     imports: [
         DynamooseModule.forFeature(dynamooseScheme),
         MinioModule.registerAsync({
-            imports: [ConfigModule],
-            useFactory: (configService: ConfigService) =>
-                getMinioConfig(configService),
+            useFactory: getMinioConfig,
             inject: [ConfigService],
         }),
     ],
