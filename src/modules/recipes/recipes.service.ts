@@ -128,7 +128,7 @@ export class RecipesService {
 
             await this.updateRecipe(id, { ...recipe, image: null });
         } catch (error) {
-            return error;
+            throw new InternalServerErrorException(error);
         }
 
         return true;
