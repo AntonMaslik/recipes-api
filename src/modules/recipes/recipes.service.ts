@@ -45,14 +45,14 @@ export class RecipesService {
     async getPaginatedRecipes(
         page: number,
         limit: number,
-    ): Promise<ScanResponse<RecipeModel>> {
-        const start: number = (page - 1) * limit;
+    ): Promise<RecipeModel[]> {
+        const start: number = Math.max(page - 1, 0) * limit;
 
         const recipes: ScanResponse<RecipeModel> =
             await this.recipesRepository.findByLimit(limit, start);
 
         if (recipes.length <= 0) {
-            return null;
+            return [];
         }
 
         return recipes;
@@ -63,7 +63,7 @@ export class RecipesService {
         page: number,
         limit: number,
     ): Promise<QueryResponse<RecipeModel>> {
-        const start: number = (page - 1) * limit;
+        const start: number = Math.max(page - 1, 0) * limit;
 
         return this.recipesRepository.findByLimitAndQuery(query, limit, start);
     }
