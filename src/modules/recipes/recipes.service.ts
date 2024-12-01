@@ -2,11 +2,7 @@ import { CreateRecipeDTO } from '@modules/recipes/dto/create-recipe.dto';
 import { UpdateRecipeDTO } from '@modules/recipes/dto/update-recipe.dto';
 import { RecipeModel } from '@modules/recipes/models/recipe.model';
 import { RecipesRepository } from '@modules/recipes/models/recipes.repository';
-import {
-    ConflictException,
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import { QueryResponse, ScanResponse } from 'nestjs-dynamoose';
@@ -25,14 +21,6 @@ export class RecipesService {
         userId: string,
         createRecipeDto: CreateRecipeDTO,
     ): Promise<RecipeModel> {
-        const recipe: RecipeModel = await this.recipesRepository.findByName(
-            createRecipeDto.name,
-        );
-
-        if (recipe) {
-            throw new ConflictException('This recipe already exists!');
-        }
-
         return this.recipesRepository.create({
             ...createRecipeDto,
             userId,
