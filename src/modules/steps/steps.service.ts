@@ -11,9 +11,7 @@ import * as url from 'url';
 export class StepsService {
     constructor(
         private readonly recipesRepository: RecipesRepository,
-
         private readonly minioService: MinioService,
-
         private readonly configService: ConfigService,
     ) {}
 
