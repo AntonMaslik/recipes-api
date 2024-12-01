@@ -113,7 +113,7 @@ export class RecipesRepository {
             throw new NotFoundException('Recipe not found')!;
         }
 
-        recipe.steps = recipe.steps || [];
+        recipe.steps = [];
 
         recipe.steps.push({ ...createStepDTO, id: crypto.randomUUID() });
 
