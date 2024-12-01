@@ -29,14 +29,7 @@ export class RecipesRepository {
     }
 
     async findNonDeleted(): Promise<ScanResponse<RecipeModel>> {
-        const recipes: ScanResponse<RecipeModel> = await this.recipeModel
-            .scan()
-            .where('deletedAt')
-            .not()
-            .exists()
-            .exec();
-
-        return recipes;
+        return this.recipeModel.scan().where('deletedAt').not().exists().exec();
     }
 
     async findById(id: string): Promise<RecipeModel> {
