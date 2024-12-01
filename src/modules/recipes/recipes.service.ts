@@ -17,9 +17,7 @@ import * as url from 'url';
 export class RecipesService {
     constructor(
         private readonly recipesRepository: RecipesRepository,
-
         private readonly minioService: MinioService,
-
         private readonly configService: ConfigService,
     ) {}
 
