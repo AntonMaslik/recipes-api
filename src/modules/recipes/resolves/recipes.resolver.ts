@@ -7,7 +7,7 @@ import { RecipeModel } from '@modules/recipes/models/recipe.model';
 import { Recipe } from '@modules/recipes/object-types/recipes-object-type';
 import { RecipesService } from '@modules/recipes/recipes.service';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { QueryResponse, ScanResponse } from 'nestjs-dynamoose';
+import { QueryResponse } from 'nestjs-dynamoose';
 
 @AccessGuard()
 @Resolver('Recipes')
