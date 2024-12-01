@@ -1,6 +1,7 @@
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { getDynamooseConfig } from '@app/config/dynamoose.config';
 import { getMinioConfig } from '@app/config/minio.config';
+import { getMulterConfig } from '@app/config/multer.options';
 import { MediaModule } from '@app/modules/media/media.module';
 import { RateModule } from '@app/modules/rate/rate.module';
 import { StepsModule } from '@app/modules/steps/steps.module';
@@ -44,10 +45,8 @@ import { join } from 'path';
             useFactory: getMinioConfig,
             inject: [ConfigService],
         }),
-        MulterModule.register({
-            limits: {
-                fileSize: 5 * 1024 * 1024,
-            },
+        MulterModule.registerAsync({
+            useFactory: getMulterConfig,
         }),
         UsersModule,
         AuthModule,
