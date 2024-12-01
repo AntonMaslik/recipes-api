@@ -3,7 +3,11 @@ import { CreateRecipeDTO } from '@modules/recipes/dto/create-recipe.dto';
 import { UpdateRecipeDTO } from '@modules/recipes/dto/update-recipe.dto';
 import { RecipeModel } from '@modules/recipes/models/recipe.model';
 import { RecipesRepository } from '@modules/recipes/models/recipes.repository';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import { QueryResponse, ScanResponse } from 'nestjs-dynamoose';
@@ -98,7 +102,7 @@ export class RecipesService {
                 image: urlPath,
             });
         } catch (error) {
-            return error;
+            throw new InternalServerErrorException(error);
         }
 
         return urlPath;
