@@ -58,7 +58,7 @@ export class RecipesRepository {
             .exec();
 
         if (recipes.length <= 0) {
-            return null;
+            throw new NotFoundException('Recipes not find!');
         }
 
         return recipes[0];
