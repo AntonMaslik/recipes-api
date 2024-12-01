@@ -225,7 +225,7 @@ export class RecipesRepository {
         const recipe: RecipeModel = await this.findById(recipeId);
 
         if (recipe.steps.length <= 0) {
-            return null;
+            throw new NotFoundException('Steps not find in this recipe!');
         }
 
         return recipe.steps;
