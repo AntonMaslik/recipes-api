@@ -11,8 +11,9 @@ export class MediaController {
     @Get(':id')
     async getMedia(
         @Param('id') id: string,
+        @Param('bucketName') bucketName: string,
         @Res({ passthrough: true }) res: Response,
     ) {
-        await this.mediaService.getResource(id, res);
+        await this.mediaService.getResource(bucketName, id, res);
     }
 }

@@ -53,7 +53,7 @@ export class RecipesResolver {
     async getRecipesPage(
         @Args('page', { type: () => Number }) page: number,
         @Args('limit', { type: () => Number }) limit: number,
-    ): Promise<ScanResponse<RecipeModel>> {
+    ): Promise<RecipeModel[]> {
         return this.recipesService.getPaginatedRecipes(page, limit);
     }
 
