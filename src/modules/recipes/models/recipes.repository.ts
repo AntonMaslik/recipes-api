@@ -82,15 +82,13 @@ export class RecipesRepository {
         limit: number,
         start: number,
     ): Promise<ScanResponse<RecipeModel>> {
-        const recipes: ScanResponse<RecipeModel> = await this.recipeModel
+        return this.recipeModel
             .scan()
             .limit(limit)
             .startAt({
                 value: start,
             })
             .exec();
-
-        return recipes;
     }
 
     async findByLimitAndQuery(
@@ -98,7 +96,7 @@ export class RecipesRepository {
         limit: number,
         start: number,
     ): Promise<QueryResponse<RecipeModel>> {
-        const recipes: QueryResponse<RecipeModel> = await this.recipeModel
+        return this.recipeModel
             .query('nameIndex')
             .contains(query)
             .limit(limit)
@@ -106,8 +104,6 @@ export class RecipesRepository {
                 value: start,
             })
             .exec();
-
-        return recipes;
     }
 
     async createStep(id: string, createStepDTO: CreateStepDTO): Promise<Step> {
