@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
-import { BucketItemFromList } from 'minio';
 import { MinioService } from 'nestjs-minio-client';
 import internal from 'stream';
 
@@ -8,27 +7,17 @@ import internal from 'stream';
 export class MediaService {
     constructor(private readonly minioService: MinioService) {}
 
-    async getResource(id: string, res: Response): Promise<void> {
+    async getResource(
+        bucketName: string,
+        id: string,
+        res: Response,
+    ): Promise<void> {
         try {
-            const buckets: BucketItemFromList[] =
-                await this.minioService.client.listBuckets();
+            const objectStream: internal.Readable =
+                await this.minioService.client.getObject(bucketName, id);
 
-            let found: boolean = false;
-
-            for (const bucket of buckets) {
-                const objectStream: internal.Readable =
-                    await this.minioService.client.getObject(bucket.name, id);
-
-                res.setHeader('ContentType', 'application/octet-stream');
-                objectStream.pipe(res);
-
-                found = true;
-                break;
-            }
-
-            if (!found) {
-                res.status(404).send('Media not found');
-            }
+            res.setHeader('ContentType', 'application/octet-stream');
+            objectStream.pipe(res);
         } catch (error) {
             res.status(505).send(error);
         }
