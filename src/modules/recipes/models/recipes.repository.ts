@@ -211,12 +211,10 @@ export class RecipesRepository {
         return this.recipeModel.update(recipe);
     }
 
-    async getStepByIdFromRecept(recipeId: string, id: string): Promise<Step> {
+    async getStepByIdFromRecipe(recipeId: string, id: string): Promise<Step> {
         const recipe: RecipeModel = await this.findById(recipeId);
 
-        const stepsFromRecipe: Step[] = recipe.steps;
-
-        return stepsFromRecipe.find((step) => step.id === id);
+        return recipe.steps.find((step) => step.id === id);
     }
 
     async getStepById(id: string): Promise<Step> {
@@ -250,7 +248,7 @@ export class RecipesRepository {
         const recipe: RecipeModel = await this.findById(recipeId);
 
         if (recipe.steps.length <= 0) {
-            throw new NotFoundException('Steps not find in this recipe!');
+            return [];
         }
 
         return recipe.steps;
