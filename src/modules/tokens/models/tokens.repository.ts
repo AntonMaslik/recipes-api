@@ -15,9 +15,7 @@ export class TokensRepository {
     private readonly tokenModel: Model<TokenModel, TokenKey>;
 
     async softDelete(id: string): Promise<TokenModel> {
-        const now: Date = new Date();
-
-        return this.tokenModel.update({ id }, { deletedAt: now });
+        return this.tokenModel.update({ id }, { deletedAt: new Date() });
     }
 
     async findNonDeleted(): Promise<ScanResponse<TokenModel>> {
@@ -33,7 +31,7 @@ export class TokensRepository {
             .exists()
             .exec();
 
-        if (tokens.length > 0) {
+        if (tokens.length) {
             return tokens[0];
         }
 
@@ -83,7 +81,7 @@ export class TokensRepository {
             .exists()
             .exec();
 
-        if (tokens.length < 0) {
+        if (!tokens.length) {
             return null;
         }
 
