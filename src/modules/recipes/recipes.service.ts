@@ -1,3 +1,4 @@
+import { generateMinioUrl } from '@app/utils/minio-gen';
 import { CreateRecipeDTO } from '@modules/recipes/dto/create-recipe.dto';
 import { UpdateRecipeDTO } from '@modules/recipes/dto/update-recipe.dto';
 import { RecipeModel } from '@modules/recipes/models/recipe.model';
@@ -76,9 +77,12 @@ export class RecipesService {
         }
 
         const bucketName: string = 'recipe-images';
-        const objectName: string = `${crypto.randomUUID()}`;
-
-        const urlPath: string = `${this.configService.getOrThrow<string>('MINIO_ENDPOINT')}:${this.configService.getOrThrow<string>('MINIO_PORT')}/${bucketName}/${objectName}`;
+        const objectName: string = crypto.randomUUID();
+        const urlPath: string = generateMinioUrl(
+            bucketName,
+            objectName,
+            this.configService,
+        );
 
         try {
             await this.minioService.client.bucketExists(bucketName);
