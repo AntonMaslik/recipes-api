@@ -16,8 +16,7 @@ import { MinioModule } from 'nestjs-minio-client';
         DynamooseModule.forFeature(dynamooseScheme),
         MinioModule.registerAsync({
             imports: [ConfigModule],
-            useFactory: (configService: ConfigService) =>
-                getMinioConfig(configService),
+            useFactory: getMinioConfig,
             inject: [ConfigService],
         }),
     ],
