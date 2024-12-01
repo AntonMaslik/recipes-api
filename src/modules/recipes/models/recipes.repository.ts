@@ -20,12 +20,10 @@ export class RecipesRepository {
     private readonly recipeModel: Model<RecipeModel, RecipeKey>;
 
     async softDelete(id: string): Promise<RecipeModel> {
-        const now: Date = new Date();
-
         return this.recipeModel.update(
             { id },
             {
-                deletedAt: now,
+                deletedAt: new Date(),
             },
         );
     }
