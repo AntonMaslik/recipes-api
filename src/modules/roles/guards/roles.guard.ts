@@ -6,7 +6,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class UserRolesGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
 
     getRequest(context: ExecutionContext) {
