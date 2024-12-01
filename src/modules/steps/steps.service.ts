@@ -2,6 +2,7 @@ import { Step } from '@app/modules/recipes/models/recipe.model';
 import { RecipesRepository } from '@app/modules/recipes/models/recipes.repository';
 import { CreateStepDTO } from '@app/modules/steps/dto/create-step.dto';
 import { UpdateStepDTO } from '@app/modules/steps/dto/update-step.dto';
+import { generateMinioUrl } from '@app/utils/minio-gen';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MinioService } from 'nestjs-minio-client';
@@ -42,7 +43,11 @@ export class StepsService {
         const bucketName: string = 'step-images';
         const objectName: string = crypto.randomUUID();
 
-        const urlPath: string = `${this.configService.getOrThrow<string>('MINIO_ENDPOINT')}:${this.configService.getOrThrow<string>('MINIO_PORT')}/${bucketName}/${objectName}`;
+        const urlPath: string = generateMinioUrl(
+            bucketName,
+            objectName,
+            this.configService,
+        );
 
         try {
             await this.minioService.client.bucketExists(bucketName);
