@@ -21,7 +21,7 @@ export class RateService {
             .eq(userId)
             .exec();
 
-        if (existingRate && existingRate.length > 0) {
+        if (existingRate?.length) {
             throw new ConflictException('Evaluation already exists!');
         }
 
