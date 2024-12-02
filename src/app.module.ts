@@ -6,6 +6,7 @@ import { MediaModule } from '@app/modules/media/media.module';
 import { RateModule } from '@app/modules/rate/rate.module';
 import { StepsModule } from '@app/modules/steps/steps.module';
 import { TasksModule } from '@app/modules/tasks/tasks.module';
+import { TokensModule } from '@app/modules/tokens/token.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { RecipesModule } from '@modules/recipes/recipes.module';
 import { UsersModule } from '@modules/users/users.module';
@@ -55,6 +56,7 @@ import { join } from 'path';
         MediaModule,
         RateModule,
         TasksModule,
+        TokensModule,
     ],
 })
 export class AppModule {}

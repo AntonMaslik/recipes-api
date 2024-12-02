@@ -16,6 +16,16 @@ type Step {
   media: String!
 }
 
+type User {
+  id: String!
+  name: String!
+  email: String!
+  password: String!
+  createdAt: String!
+  updatedAt: String!
+  deleteAt: String!
+}
+
 type ChangePassword {
   currentPassword: String!
   newPassword: String!
@@ -39,16 +49,6 @@ type Recipe {
   userId: String!
   createdAt: String!
   updatedAt: String!
-}
-
-type User {
-  id: String!
-  name: String!
-  email: String!
-  password: String!
-  createdAt: String!
-  updatedAt: String!
-  deleteAt: String!
 }
 
 type Query {
