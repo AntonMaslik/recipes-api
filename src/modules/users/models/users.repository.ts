@@ -10,12 +10,10 @@ export class UsersRepository {
     private readonly userModel: Model<UserModel, UserKey>;
 
     async softDelete(userId: string): Promise<UserModel> {
-        const now: Date = new Date();
-
         return this.userModel.update(
             { id: userId },
             {
-                deletedAt: now,
+                deletedAt: new Date(),
             },
         );
     }
@@ -41,7 +39,7 @@ export class UsersRepository {
             .exec();
 
         if (users.length > 0) {
-            return users[0];
+            return users[0] ?? null;
         }
 
         return null;
@@ -57,7 +55,7 @@ export class UsersRepository {
             .exec();
 
         if (users.length > 0) {
-            return users[0];
+            return users[0] ?? null;
         }
 
         return null;
