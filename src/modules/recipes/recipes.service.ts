@@ -98,7 +98,6 @@ export class RecipesService {
             );
 
             await this.recipesRepository.update(id, {
-                ...recipe,
                 image: urlPath,
             });
         } catch (error) {
@@ -126,7 +125,7 @@ export class RecipesService {
         try {
             await this.minioService.client.removeObject(bucketName, objectName);
 
-            await this.updateRecipe(id, { ...recipe, image: null });
+            await this.updateRecipe(id, { image: '' });
         } catch (error) {
             throw new InternalServerErrorException(error);
         }

@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, StreamableFile } from '@nestjs/common';
 import { Response } from 'express';
 import { MinioService } from 'nestjs-minio-client';
-import internal from 'stream';
+import { Readable } from 'stream';
 
 @Injectable()
 export class MediaService {
@@ -11,13 +11,12 @@ export class MediaService {
         bucketName: string,
         id: string,
         res: Response,
-    ): Promise<void> {
+    ): Promise<StreamableFile> {
         try {
-            const objectStream: internal.Readable =
+            const objectStream: Readable =
                 await this.minioService.client.getObject(bucketName, id);
 
-            res.setHeader('ContentType', 'application/octet-stream');
-            objectStream.pipe(res);
+            return new StreamableFile(objectStream);
         } catch (error) {
             res.status(505).send(error);
         }
