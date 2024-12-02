@@ -2,11 +2,9 @@ import { Step } from '@app/modules/recipes/models/recipe.model';
 import { RecipesRepository } from '@app/modules/recipes/models/recipes.repository';
 import { CreateStepDTO } from '@app/modules/steps/dto/create-step.dto';
 import { UpdateStepDTO } from '@app/modules/steps/dto/update-step.dto';
-import { generateMinioUrl } from '@app/utils/minio-gen';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MinioService } from 'nestjs-minio-client';
-import * as url from 'url';
 
 @Injectable()
 export class StepsService {
@@ -40,14 +38,9 @@ export class StepsService {
     }
 
     async bindImage(id: string, file: Express.Multer.File): Promise<string> {
-        const bucketName: string = 'step-images';
+        const bucketName: string =
+            this.configService.getOrThrow<string>('MINIO_BUCKET_STEPS');
         const objectName: string = crypto.randomUUID();
-
-        const urlPath: string = generateMinioUrl(
-            bucketName,
-            objectName,
-            this.configService,
-        );
 
         try {
             await this.minioService.client.bucketExists(bucketName);
@@ -59,13 +52,13 @@ export class StepsService {
             );
 
             await this.updateStep(id, {
-                media: urlPath,
+                media: objectName,
             });
         } catch (error) {
             return error;
         }
 
-        return urlPath;
+        return objectName;
     }
 
     async unbindImage(id: string): Promise<boolean> {
@@ -75,16 +68,11 @@ export class StepsService {
             throw new NotFoundException('Step not found!');
         }
 
-        const parsedUrl: url.UrlWithStringQuery = url.parse(step.media);
-
-        const bucketName: string = parsedUrl.pathname?.split('/')[1];
-        const objectName: string = parsedUrl.pathname
-            ?.split('/')
-            .slice(2)
-            .join('/');
+        const bucketName: string =
+            this.configService.getOrThrow<string>('MINIO_BUCKET_STEPS');
 
         try {
-            await this.minioService.client.removeObject(bucketName, objectName);
+            await this.minioService.client.removeObject(bucketName, id);
 
             await this.updateStep(id, { media: '' });
         } catch (error) {

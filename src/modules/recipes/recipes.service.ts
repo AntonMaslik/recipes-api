@@ -1,4 +1,3 @@
-import { generateMinioUrl } from '@app/utils/minio-gen';
 import { CreateRecipeDTO } from '@modules/recipes/dto/create-recipe.dto';
 import { UpdateRecipeDTO } from '@modules/recipes/dto/update-recipe.dto';
 import { RecipeModel } from '@modules/recipes/models/recipe.model';
@@ -12,7 +11,6 @@ import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import { QueryResponse, ScanResponse } from 'nestjs-dynamoose';
 import { MinioService } from 'nestjs-minio-client';
-import * as url from 'url';
 
 @Injectable()
 export class RecipesService {
@@ -80,13 +78,10 @@ export class RecipesService {
             throw new NotFoundException('Recipe not find!');
         }
 
-        const bucketName: string = 'recipe-images';
-        const objectName: string = crypto.randomUUID();
-        const urlPath: string = generateMinioUrl(
-            bucketName,
-            objectName,
-            this.configService,
+        const bucketName: string = this.configService.getOrThrow<string>(
+            'MINIO_BUCKET_RECIPES',
         );
+        const objectName: string = crypto.randomUUID();
 
         try {
             await this.minioService.client.bucketExists(bucketName);
@@ -98,13 +93,13 @@ export class RecipesService {
             );
 
             await this.recipesRepository.update(id, {
-                image: urlPath,
+                image: objectName,
             });
         } catch (error) {
             throw new InternalServerErrorException(error);
         }
 
-        return urlPath;
+        return objectName;
     }
 
     async unbindImage(id: string): Promise<boolean> {
@@ -114,16 +109,15 @@ export class RecipesService {
             throw new NotFoundException('Recipe not find!');
         }
 
-        const parsedUrl: url.UrlWithStringQuery = url.parse(recipe.image);
-
-        const bucketName: string = parsedUrl.pathname?.split('/')[1];
-        const objectName: string = parsedUrl.pathname
-            ?.split('/')
-            .slice(2)
-            .join('/');
+        const bucketName: string = this.configService.getOrThrow<string>(
+            'MINIO_BUCKET_RECIPES',
+        );
 
         try {
-            await this.minioService.client.removeObject(bucketName, objectName);
+            await this.minioService.client.removeObject(
+                bucketName,
+                recipe.image,
+            );
 
             await this.updateRecipe(id, { image: '' });
         } catch (error) {
