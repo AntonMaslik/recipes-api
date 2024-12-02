@@ -25,7 +25,7 @@ export class AuthResolver {
         @Cookie('refreshToken') refreshToken: string,
         @Context() context: GraphqlContext,
     ): Promise<boolean> {
-        const { res } = context;
+        const { res }: GraphqlContext = context;
 
         const currentRefreshToken: string = refreshToken;
 
@@ -45,7 +45,7 @@ export class AuthResolver {
         @Args('input') signUpDTO: SignUpDTO,
         @Context() context: GraphqlContext,
     ): Promise<TokensDTO> {
-        const { res } = context;
+        const { res }: GraphqlContext = context;
 
         const tokens: TokensDTO = await this.authService.signUp(signUpDTO);
 
@@ -61,7 +61,7 @@ export class AuthResolver {
         @Args('input') signInDTO: SignInDTO,
         @Context() context: GraphqlContext,
     ): Promise<TokensDTO> {
-        const { res } = context;
+        const { res }: GraphqlContext = context;
 
         const tokens: TokensDTO = await this.authService.signIn(signInDTO);
 
@@ -79,7 +79,7 @@ export class AuthResolver {
         @Cookie('refreshToken') currentRefreshToken,
         @Context() context: GraphqlContext,
     ): Promise<TokensDTO> {
-        const { res } = context;
+        const { res }: GraphqlContext = context;
 
         const { accessToken, refreshToken } =
             await this.authService.refreshToken(user.id, currentRefreshToken);
