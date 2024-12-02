@@ -1,16 +1,19 @@
 import { RateKey, RateModel } from '@app/modules/rate/models/rate.model';
-import { RecipeModel } from '@app/modules/recipes/models/recipe.model';
-import { RecipesRepository } from '@app/modules/recipes/models/recipes.repository';
+import {
+    RecipeKey,
+    RecipeModel,
+} from '@app/modules/recipes/models/recipe.model';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { InjectModel, Model } from 'nestjs-dynamoose';
+import { InjectModel, Model, ScanResponse } from 'nestjs-dynamoose';
 
 @Injectable()
 export class TasksService {
     private readonly logger = new Logger(TasksService.name);
 
     constructor(
-        private readonly recipesRepository: RecipesRepository,
+        @InjectModel('Recipe')
+        private readonly recipeModel: Model<RecipeModel, RecipeKey>,
 
         @InjectModel('Rate')
         private readonly rateModel: Model<RateModel, RateKey>,
@@ -18,56 +21,80 @@ export class TasksService {
 
     @Cron(CronExpression.EVERY_2_HOURS)
     async handleCron() {
-        const recipes: RecipeModel[] =
-            await this.recipesRepository.findNonDeleted();
-        const ratedItems: RateModel[] = await this.rateModel.scan().exec();
-
-        if (!ratedItems.length || !recipes.length) {
-            this.logger.log('[INFO] Recipes or ratedItems not found!');
-
-            return;
-        }
-
-        const ratingsMap = ratedItems.reduce(
-            (acc, rateItem) => {
-                if (!acc[rateItem.recipeId]) {
-                    acc[rateItem.recipeId] = [];
-                }
-                acc[rateItem.recipeId].push(rateItem.evaluation);
-
-                return acc;
-            },
-            {} as Record<string, number[]>,
-        );
-
-        for await (const recipe of this.getRecipeWithAverageRating(
-            recipes,
-            ratingsMap,
-        )) {
-            await this.recipesRepository.update(recipe.id, {
-                rating: recipe.avgRating,
-            });
-            await this.logger.log(
-                `Recipe id: ${recipe.id}, new rating: ${recipe.avgRating}`,
-                'INFO',
-            );
+        for await (const recipes of this.getRecipesGenerator()) {
+            for (const recipe of recipes) {
+                const average: number = await this.averageRating(
+                    100,
+                    recipe.id,
+                );
+                await this.recipeModel.update(recipe, {
+                    rating: average,
+                });
+            }
         }
     }
 
-    async *getRecipeWithAverageRating(
-        recipes: RecipeModel[],
-        ratingsMap: Record<string, number[]>,
-    ): AsyncGenerator<{ id: string; avgRating: number }> {
-        for (const recipe of recipes) {
-            const ratings = ratingsMap[recipe.id] || [];
-            if (ratings.length > 0) {
-                const sumRating = ratings.reduce(
-                    (sum, rating) => sum + rating,
-                    0,
-                );
-                const avg = sumRating / ratings.length;
-                yield { id: recipe.id, avgRating: avg };
-            }
+    async averageRating(
+        limitRating: number = 100,
+        recipeId: string,
+    ): Promise<number> {
+        let sum: number = 0;
+        let amount: number = 0;
+
+        for await (const ratings of this.getRatingGenerator(
+            limitRating,
+            recipeId,
+        ) as AsyncGenerator<RateModel[]>) {
+            sum += ratings.reduce((acc, { evaluation }) => evaluation + acc, 0);
+            amount += ratings.length;
         }
+
+        if (amount === 0) {
+            return 0;
+        }
+
+        return sum / amount;
+    }
+
+    async *getRecipesGenerator(
+        limit: number = 100,
+    ): AsyncGenerator<RecipeModel[]> {
+        let lastKey: object | null = null;
+
+        do {
+            const recipes: ScanResponse<RecipeModel> = await this.recipeModel
+                .scan()
+                .where('deletedAt')
+                .not()
+                .exists()
+                .startAt(lastKey)
+                .limit(limit)
+                .exec();
+
+            lastKey = recipes.lastKey;
+
+            yield recipes;
+        } while (lastKey);
+    }
+
+    async *getRatingGenerator(
+        limit: number = 100,
+        recipeId: string,
+    ): AsyncGenerator {
+        let lastKey: object | null = null;
+
+        do {
+            const ratings: ScanResponse<RateModel> = await this.rateModel
+                .scan()
+                .where('recipeId')
+                .eq(recipeId)
+                .startAt(lastKey)
+                .limit(limit)
+                .exec();
+
+            lastKey = ratings.lastKey;
+
+            yield ratings;
+        } while (lastKey);
     }
 }
