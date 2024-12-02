@@ -22,7 +22,7 @@ export class TasksService {
             await this.recipesRepository.findNonDeleted();
         const ratedItems: RateModel[] = await this.rateModel.scan().exec();
 
-        if (ratedItems.length === 0 || recipes.length === 0) {
+        if (!ratedItems.length || !recipes.length) {
             this.logger.log('[INFO] Recipes or ratedItems not found!');
 
             return;
