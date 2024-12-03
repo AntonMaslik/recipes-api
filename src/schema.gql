@@ -2,14 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type TokensDTO {
-  accessToken: String!
-  refreshToken: String!
+type Rate {
+  recipeId: String!
+  userId: String!
+  evaluation: Float!
 }
 
-type ChangePassword {
-  currentPassword: String!
-  newPassword: String!
+type Step {
+  id: String!
+  title: String!
+  body: String!
+  position: Float!
+  media: String!
 }
 
 type User {
@@ -22,18 +26,55 @@ type User {
   deleteAt: String!
 }
 
+type ChangePassword {
+  currentPassword: String!
+  newPassword: String!
+}
+
+type TokensDTO {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type Recipe {
+  id: String!
+  name: String!
+  title: String!
+  body: String!
+  image: String!
+  ingriditens: [String!]!
+  servingSize: Float!
+  cookingTime: String!
+  rating: Float!
+  userId: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
 type Query {
   getUserById(id: String!): User!
   getMe: User!
-  deleteUser(id: String!): User!
+  getRecipeById(id: String!): Recipe!
+  getRecipesPage(page: Float!, limit: Float!): Recipe!
+  getRecipesQuery(query: String!, page: Float!, limit: Float!): Recipe!
+  getStepsRecipe(recipeId: String!): [Step!]!
 }
 
 type Mutation {
+  deleteUser(id: String!): User!
   logout: Boolean!
   signUp(input: SignUpDTO!): TokensDTO!
   signIn(input: SignInDTO!): TokensDTO!
   refresh: TokensDTO!
   changePassword(input: ChangePasswordDTO!): ChangePassword!
+  createRecipe(input: CreateRecipeDTO!): Recipe!
+  updateRecipe(id: String!, input: UpdateRecipeDTO!): Recipe!
+  deleteRecipeById(id: String!): Recipe!
+  createStep(recipeId: String!, input: CreateStepDTO!): Step!
+  updateStep(id: String!, input: UpdateStepDTO!): Step!
+  deleteStep(id: String!): Step!
+  updatePosition(id: String!, position: Float!): Step!
+  createEvaluation(recipeId: String!, evaluation: Float!): Rate!
 }
 
 input SignUpDTO {
@@ -50,4 +91,41 @@ input SignInDTO {
 input ChangePasswordDTO {
   currentPassword: String!
   newPassword: String!
+}
+
+input CreateRecipeDTO {
+  name: String!
+  title: String!
+  body: String!
+  image: String!
+  ingriditens: [String!]!
+  servingSize: Float!
+  cookingTime: String!
+  userId: String
+}
+
+input UpdateRecipeDTO {
+  name: String!
+  title: String!
+  body: String!
+  image: String!
+  rating: Float!
+  ingriditens: [String!]!
+  servingSize: Float!
+  cookingTime: String!
+  userId: String!
+}
+
+input CreateStepDTO {
+  title: String!
+  body: String!
+  position: Float!
+  media: String!
+}
+
+input UpdateStepDTO {
+  title: String!
+  body: String!
+  position: Float!
+  media: String!
 }

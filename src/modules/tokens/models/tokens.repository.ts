@@ -1,34 +1,41 @@
 import { NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { InjectModel, Model, ScanResponse } from 'nestjs-dynamoose';
+import * as crypto from 'crypto';
+import {
+    InjectModel,
+    Model,
+    QueryResponse,
+    ScanResponse,
+} from 'nestjs-dynamoose';
 
 import { TokenKey, TokenModel } from './token.model';
 
 export class TokensRepository {
     @InjectModel('Token')
-    private tokenModel: Model<TokenModel, TokenKey>;
+    private readonly tokenModel: Model<TokenModel, TokenKey>;
 
     async softDelete(id: string): Promise<TokenModel> {
-        const now: Date = new Date();
-        return await this.tokenModel.update({ id }, { deletedAt: now });
+        return this.tokenModel.update({ id }, { deletedAt: new Date() });
     }
 
     async findNonDeleted(): Promise<ScanResponse<TokenModel>> {
-        return await this.tokenModel
-            .scan()
+        return this.tokenModel.scan().where('deletedAt').not().exists().exec();
+    }
+
+    async findById(id: string): Promise<TokenModel> {
+        const tokens: QueryResponse<TokenModel> = await this.tokenModel
+            .query('id')
+            .eq(id)
             .where('deletedAt')
             .not()
             .exists()
             .exec();
-    }
 
-    async findById(id: string): Promise<TokenModel> {
-        const token: TokenModel = await this.tokenModel.get({ id });
-
-        if (token && token.deletedAt !== null) {
-            return null;
+        if (tokens.length) {
+            return tokens[0];
         }
-        return token;
+
+        return null;
     }
 
     async findTokensByHashCompare(
@@ -38,7 +45,11 @@ export class TokensRepository {
         const result = [];
 
         for (const token of tokens) {
-            if (await bcrypt.compare(refreshToken, token.refreshToken)) {
+            const status: boolean = await bcrypt.compare(
+                refreshToken,
+                token.refreshToken,
+            );
+            if (status) {
                 result.push(token);
             }
         }
@@ -64,30 +75,29 @@ export class TokensRepository {
             .scan()
             .where('refreshToken')
             .eq(refreshToken)
+            .and()
+            .where('deletedAt')
+            .not()
+            .exists()
             .exec();
 
-        if (tokens.length === 0) {
+        if (!tokens.length) {
             return null;
         }
 
-        const token: TokenModel = tokens[0];
-
-        if (token.deletedAt) {
-            return null;
-        }
-
-        return token;
+        return tokens[0];
     }
 
     async create(refreshToken: string, userId: string): Promise<TokenModel> {
-        return await this.tokenModel.create({
+        return this.tokenModel.create({
+            id: crypto.randomUUID(),
             refreshToken,
             userId,
         });
     }
 
     async update(refreshToken: string, userId: string): Promise<TokenModel> {
-        return await this.tokenModel.update({
+        return this.tokenModel.update({
             refreshToken,
             userId,
         });

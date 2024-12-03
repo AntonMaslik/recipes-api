@@ -1,9 +1,10 @@
+import { UserKey, UserModel } from '@modules/users/models/user.model';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { InjectModel, Model } from 'nestjs-dynamoose';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UserKey, UserModel } from 'src/modules/users/models/user.model';
 
 type JwtPayload = {
     sub: string;
@@ -19,6 +20,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
     constructor(
         @InjectModel('User')
         private userModel: Model<UserModel, UserKey>,
+        private configService: ConfigService,
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([
@@ -26,7 +28,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
                     return request.cookies.refreshToken;
                 },
             ]),
-            secretOrKey: process.env.JWT_REFRESH_SECRET,
+            secretOrKey: configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
             passReqToCallback: true,
         });
     }

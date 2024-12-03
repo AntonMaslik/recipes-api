@@ -1,11 +1,25 @@
+import * as crypto from 'crypto';
 import * as dynamose from 'dynamoose';
-import { v4 as uuidv4 } from 'uuid';
 
-const recipeSchema = new dynamose.Schema({
+const stepSchema = new dynamose.Schema({
+    id: String,
+    title: String,
+    body: String,
+    position: Number,
+    media: String,
+});
+
+export const recipeSchema = new dynamose.Schema({
     id: {
         type: String,
         hashKey: true,
-        default: uuidv4,
+        default: crypto.randomUUID(),
+    },
+    name: {
+        type: String,
+        index: {
+            name: 'nameIndex',
+        },
     },
     title: {
         type: String,
@@ -18,6 +32,7 @@ const recipeSchema = new dynamose.Schema({
     },
     ingriditens: {
         type: Array,
+        schema: [String],
     },
     servingSize: {
         type: Number,
@@ -26,16 +41,15 @@ const recipeSchema = new dynamose.Schema({
         type: String,
     },
     steps: {
-        type: Object,
-        schema: {
-            title: String,
-            body: String,
-            position: Number,
-            image: String,
-        },
+        type: Array,
+        schema: [stepSchema],
     },
     rating: {
         type: Number,
+        default: 0.0,
+    },
+    userId: {
+        type: String,
     },
     createdAt: {
         type: Date,
@@ -51,4 +65,33 @@ const recipeSchema = new dynamose.Schema({
     },
 });
 
-export const recipeModel = dynamose.model('Recipe', recipeSchema);
+export interface RecipeKey {
+    id: string;
+}
+
+export interface StepKey {
+    id?: string;
+}
+
+export interface Step extends StepKey {
+    title?: string;
+    body?: string;
+    position?: number;
+    media?: string;
+}
+
+export interface RecipeModel extends RecipeKey {
+    title: string;
+    body: string;
+    name: string;
+    image: string;
+    ingriditens: string[];
+    steps?: Step[];
+    servingSize: number;
+    cookingTime: string;
+    rating?: number;
+    userId: string;
+    createdAt?: string;
+    updatedAt?: string;
+    deletedAt?: Date;
+}

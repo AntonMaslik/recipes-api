@@ -1,28 +1,30 @@
+import { ChangePasswordDTO } from '@modules/auth/dto/change-password.dto';
+import { SignInDTO } from '@modules/auth/dto/sign-in.dto';
+import { SignUpDTO } from '@modules/auth/dto/sign-up.dto';
+import { Role } from '@modules/roles/roles.enum';
+import { TokensDTO } from '@modules/tokens/dto/tokens.dto';
+import { TokenModel } from '@modules/tokens/models/token.model';
+import { TokensRepository } from '@modules/tokens/models/tokens.repository';
+import { UserModel } from '@modules/users/models/user.model';
+import { UsersRepository } from '@modules/users/models/users.repository';
 import {
     ConflictException,
     ForbiddenException,
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { generateHash } from '@utils/hash.util';
 import * as bcrypt from 'bcrypt';
-
-import { Role } from '../roles/roles.enum';
-import { TokensDTO } from '../tokens/dto/tokens.dto';
-import { TokenModel } from '../tokens/models/token.model';
-import { TokensRepository } from '../tokens/models/tokens.repository';
-import { UserModel } from '../users/models/user.model';
-import { UsersRepository } from '../users/models/users.repository';
-import { ChangePasswordDTO } from './dto/change-password.dto';
-import { SignInDTO } from './dto/sign-in.dto';
-import { SignUpDTO } from './dto/sign-up.dto';
 
 @Injectable()
 export class AuthService {
     constructor(
-        private jwtService: JwtService,
+        private readonly jwtService: JwtService,
         private readonly usersRepository: UsersRepository,
         private readonly tokensRepository: TokensRepository,
+        private readonly configService: ConfigService,
     ) {}
 
     async signUp(signUpDto: SignUpDTO): Promise<TokensDTO> {
@@ -34,10 +36,7 @@ export class AuthService {
             throw new ConflictException('User exists!');
         }
 
-        const hashedPassword: string = await bcrypt.hash(
-            signUpDto.password,
-            10,
-        );
+        const hashedPassword: string = await generateHash(signUpDto.password);
 
         const newUser = await this.usersRepository.create({
             name: signUpDto.name,
@@ -51,12 +50,11 @@ export class AuthService {
             newUser.name,
         );
 
-        const hashRefreshToken: string = await bcrypt.hash(
+        const hashRefreshToken: string = await generateHash(
             tokens.refreshToken,
-            10,
         );
 
-        await this.createRefreshToken(newUser.id, hashRefreshToken);
+        await this.tokensRepository.create(hashRefreshToken, newUser.id);
 
         return tokens;
     }
@@ -84,21 +82,13 @@ export class AuthService {
             user.name,
         );
 
-        const hashRefreshToken: string = await bcrypt.hash(
+        const hashRefreshToken: string = await generateHash(
             tokens.refreshToken,
-            10,
         );
 
-        await this.createRefreshToken(user.id, hashRefreshToken);
+        await this.tokensRepository.create(hashRefreshToken, user.id);
 
         return tokens;
-    }
-
-    async createRefreshToken(
-        userId: string,
-        refreshToken: string,
-    ): Promise<TokenModel> {
-        return this.tokensRepository.create(refreshToken, userId);
     }
 
     async logout(currentRefreshToken: string): Promise<boolean> {
@@ -121,8 +111,12 @@ export class AuthService {
                     username,
                 },
                 {
-                    secret: process.env.JWT_ACCESS_SECRET,
-                    expiresIn: process.env.JWT_EXPIRATION_ACCESS_SECRET,
+                    secret: this.configService.getOrThrow<string>(
+                        'JWT_ACCESS_SECRET',
+                    ),
+                    expiresIn: this.configService.getOrThrow<string>(
+                        'JWT_EXPIRATION_ACCESS_SECRET',
+                    ),
                 },
             ),
             this.jwtService.signAsync(
@@ -131,8 +125,12 @@ export class AuthService {
                     username,
                 },
                 {
-                    secret: process.env.JWT_REFRESH_SECRET,
-                    expiresIn: process.env.JWT_EXPIRATION_REFRESH_SECRET,
+                    secret: this.configService.getOrThrow<string>(
+                        'JWT_REFRESH_SECRET',
+                    ),
+                    expiresIn: this.configService.getOrThrow<string>(
+                        'JWT_EXPIRATION_REFRESH_SECRET',
+                    ),
                 },
             ),
         ]);
@@ -157,12 +155,11 @@ export class AuthService {
             user.name,
         );
 
-        const hashRefreshToken: string = await bcrypt.hash(
+        const hashRefreshToken: string = await generateHash(
             tokens.refreshToken,
-            10,
         );
 
-        await this.createRefreshToken(user.id, hashRefreshToken);
+        await this.tokensRepository.create(hashRefreshToken, user.id);
 
         await this.tokensRepository.softDelete(token.id);
 
@@ -188,9 +185,8 @@ export class AuthService {
             throw new ForbiddenException('Wrong password');
         }
 
-        const hashNewPassword: string = await bcrypt.hash(
+        const hashNewPassword: string = await generateHash(
             changePasswordDto.newPassword,
-            10,
         );
 
         await this.usersRepository.update(userId, {

@@ -1,9 +1,9 @@
-import { UserModel } from 'src/modules/users/models/user.model';
+import { UserModel } from '@app/modules/users/models/user.model';
 
-declare global {
-    namespace Express {
-        export interface User {
+declare module 'express' {
+    export interface Request {
+        user?: {
             userDb: UserModel;
-        }
+        };
     }
 }

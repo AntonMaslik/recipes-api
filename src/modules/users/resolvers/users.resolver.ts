@@ -1,15 +1,15 @@
-import { Args, Context, Query, Resolver } from '@nestjs/graphql';
-import { AccessGuard } from 'src/modules/auth/decorators/guard.decorators';
-import { Roles } from 'src/modules/roles/decorators/roles.decorator';
-import { RolesGuard } from 'src/modules/roles/decorators/roles-guard.decorator';
-import { Role } from 'src/modules/roles/roles.enum';
-
-import { UserModel } from '../models/user.model';
-import { User } from '../object-types/users-object.type';
-import { UserService } from '../users.service';
+import { AccessGuard } from '@app/decorators/guard.decorators';
+import { User as UserDecorator } from '@app/decorators/user.decorator';
+import { Roles } from '@modules/roles/decorators/roles.decorator';
+import { RolesGuard } from '@modules/roles/decorators/roles-guard.decorator';
+import { Role } from '@modules/roles/roles.enum';
+import { UserModel } from '@modules/users/models/user.model';
+import { User } from '@modules/users/object-types/users-object.type';
+import { UserService } from '@modules/users/users.service';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 @AccessGuard()
-@Resolver('User')
+@Resolver('Users')
 export class UsersResolver {
     constructor(private readonly usersService: UserService) {}
 
@@ -21,15 +21,13 @@ export class UsersResolver {
     }
 
     @Query(() => User)
-    async getMe(@Context() context: any): Promise<UserModel> {
-        const { req } = context;
-
-        return this.usersService.getUserById(req.user.userDb.id);
+    async getMe(@UserDecorator() user: UserModel): Promise<UserModel> {
+        return this.usersService.getUserById(user.id);
     }
 
     @RolesGuard()
     @Roles(Role.ADMIN)
-    @Query(() => User)
+    @Mutation(() => User)
     async deleteUser(
         @Args('id', { type: () => String }) id: string,
     ): Promise<UserModel> {
