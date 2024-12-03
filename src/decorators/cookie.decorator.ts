@@ -3,7 +3,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { Request } from 'express';
 
 export const Cookie = createParamDecorator(
-    (cookieName: string, context: ExecutionContext) => {
+    (cookieName: string, context: ExecutionContext): string | undefined => {
         const ctx: GqlExecutionContext = GqlExecutionContext.create(context);
 
         const request: Request = ctx.getContext().req;

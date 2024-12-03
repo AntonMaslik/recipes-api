@@ -76,7 +76,7 @@ export class AuthResolver {
     })
     async refreshToken(
         @User() user: UserModel,
-        @Cookie('refreshToken') currentRefreshToken,
+        @Cookie('refreshToken') currentRefreshToken: string,
         @Context() context: GraphqlContext,
     ): Promise<TokensDTO> {
         const { res }: GraphqlContext = context;
