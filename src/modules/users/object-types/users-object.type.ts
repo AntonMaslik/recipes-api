@@ -14,6 +14,9 @@ export class User {
     @Field()
     password: string;
 
+    @Field(() => [String])
+    roles: string[];
+
     @Field()
     createdAt: string;
 
